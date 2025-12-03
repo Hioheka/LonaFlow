@@ -77,6 +77,7 @@ public class RecurringTransactionProcessorService : BackgroundService
                 };
 
                 context.RecurringTransactionInstances.Add(instance);
+                await context.SaveChangesAsync(); // Save to get instance.Id
 
                 // Create transaction
                 var transaction = new Transaction
@@ -90,15 +91,14 @@ public class RecurringTransactionProcessorService : BackgroundService
                     CategoryId = recurring.CategoryId,
                     PaymentMethodId = recurring.PaymentMethodId,
                     CreditorId = recurring.CreditorId,
+                    RecurringTransactionInstanceId = instance.Id,
                     CreatedAt = DateTime.UtcNow
                 };
 
                 context.Transactions.Add(transaction);
                 await context.SaveChangesAsync();
 
-                // Link transaction to instance
-                instance.Transaction = transaction;
-                instance.RecurringTransactionInstanceId = transaction.Id;
+                // Update instance
                 instance.IsProcessed = true;
                 instance.ProcessedAt = DateTime.UtcNow;
 
