@@ -71,7 +71,7 @@ dotnet restore
 # "DefaultConnection" değerini kendi SQL Server bağlantınıza göre güncelleyin
 
 # Örnek:
-# "DefaultConnection": "Server=localhost;Database=BudgetTrackerDb;Trusted_Connection=True;TrustServerCertificate=True"
+# "DefaultConnection": "Server=localhost;Database=LonaFlowDB;Trusted_Connection=True;TrustServerCertificate=True"
 
 # Database migration oluşturun
 cd src/BudgetTracker.API
