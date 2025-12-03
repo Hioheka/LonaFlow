@@ -38,17 +38,17 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             entity.HasOne(e => e.Category)
                 .WithMany(c => c.Transactions)
                 .HasForeignKey(e => e.CategoryId)
-                .OnDelete(DeleteBehavior.SetNull);
+                .OnDelete(DeleteBehavior.NoAction);
 
             entity.HasOne(e => e.PaymentMethod)
                 .WithMany(p => p.Transactions)
                 .HasForeignKey(e => e.PaymentMethodId)
-                .OnDelete(DeleteBehavior.SetNull);
+                .OnDelete(DeleteBehavior.NoAction);
 
             entity.HasOne(e => e.Creditor)
                 .WithMany(c => c.Transactions)
                 .HasForeignKey(e => e.CreditorId)
-                .OnDelete(DeleteBehavior.SetNull);
+                .OnDelete(DeleteBehavior.NoAction);
 
             entity.HasIndex(e => e.TransactionDate);
             entity.HasIndex(e => e.UserId);
@@ -70,17 +70,17 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             entity.HasOne(e => e.Category)
                 .WithMany(c => c.RecurringTransactions)
                 .HasForeignKey(e => e.CategoryId)
-                .OnDelete(DeleteBehavior.SetNull);
+                .OnDelete(DeleteBehavior.NoAction);
 
             entity.HasOne(e => e.PaymentMethod)
                 .WithMany(p => p.RecurringTransactions)
                 .HasForeignKey(e => e.PaymentMethodId)
-                .OnDelete(DeleteBehavior.SetNull);
+                .OnDelete(DeleteBehavior.NoAction);
 
             entity.HasOne(e => e.Creditor)
                 .WithMany(c => c.RecurringTransactions)
                 .HasForeignKey(e => e.CreditorId)
-                .OnDelete(DeleteBehavior.SetNull);
+                .OnDelete(DeleteBehavior.NoAction);
 
             entity.HasIndex(e => e.NextDueDate);
             entity.HasIndex(e => e.IsActive);
@@ -99,7 +99,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             entity.HasOne(e => e.Transaction)
                 .WithOne(t => t.RecurringTransactionInstance)
                 .HasForeignKey<Transaction>(t => t.RecurringTransactionInstanceId)
-                .OnDelete(DeleteBehavior.SetNull);
+                .OnDelete(DeleteBehavior.NoAction);
 
             entity.HasIndex(e => e.DueDate);
             entity.HasIndex(e => e.IsProcessed);
