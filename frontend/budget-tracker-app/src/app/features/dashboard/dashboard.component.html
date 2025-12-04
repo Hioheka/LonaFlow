@@ -1,0 +1,166 @@
+<mat-toolbar color="primary">
+  <span>LonaFlow - Bütçe Takip Uygulaması</span>
+  <span class="spacer"></span>
+  <button mat-button (click)="logout()">
+    <mat-icon>logout</mat-icon>
+    Çıkış
+  </button>
+</mat-toolbar>
+
+<div class="dashboard-container">
+  <div class="dashboard-header">
+    <h1>Dashboard</h1>
+    <p class="welcome-message">Hoş geldiniz! Bu sayfa geliştiriime aşamasındadır.</p>
+  </div>
+
+  <!-- Genel Bakış Section -->
+  <section class="overview-section">
+    <h2>Genel Bakış</h2>
+    <p class="info-message">Burada grafik ve KPI kartları gösterilecek.</p>
+    <p class="warning-message">
+      <mat-icon>info</mat-icon>
+      Lütfen backend API'yi çalıştırdığınızdan emin olun.
+    </p>
+
+    <!-- KPI Cards -->
+    <div class="kpi-cards" *ngIf="dashboardData; else loading">
+      <mat-card class="kpi-card income-card">
+        <mat-card-content>
+          <div class="kpi-icon">
+            <mat-icon>trending_up</mat-icon>
+          </div>
+          <div class="kpi-details">
+            <h3 class="kpi-label">Toplam Gelir</h3>
+            <p class="kpi-value">{{ dashboardData.totalIncome | currency:'TRY':'symbol':'1.2-2' }}</p>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="kpi-card expense-card">
+        <mat-card-content>
+          <div class="kpi-icon">
+            <mat-icon>trending_down</mat-icon>
+          </div>
+          <div class="kpi-details">
+            <h3 class="kpi-label">Toplam Gider</h3>
+            <p class="kpi-value">{{ dashboardData.totalExpense | currency:'TRY':'symbol':'1.2-2' }}</p>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="kpi-card balance-card">
+        <mat-card-content>
+          <div class="kpi-icon">
+            <mat-icon>account_balance_wallet</mat-icon>
+          </div>
+          <div class="kpi-details">
+            <h3 class="kpi-label">Net Bakiye</h3>
+            <p class="kpi-value" [class.positive]="dashboardData.netBalance >= 0" [class.negative]="dashboardData.netBalance < 0">
+              {{ dashboardData.netBalance | currency:'TRY':'symbol':'1.2-2' }}
+            </p>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="kpi-card savings-card">
+        <mat-card-content>
+          <div class="kpi-icon">
+            <mat-icon>savings</mat-icon>
+          </div>
+          <div class="kpi-details">
+            <h3 class="kpi-label">Tasarruf Oranı</h3>
+            <p class="kpi-value">{{ dashboardData.savingsRate | number:'1.1-1' }}%</p>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- Charts Section -->
+    <div class="charts-section" *ngIf="dashboardData; else loading">
+      <div class="chart-row">
+        <!-- Expenses by Category -->
+        <mat-card class="chart-card">
+          <mat-card-header>
+            <mat-card-title>Kategorilere Göre Giderler</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="chart-placeholder">
+              <mat-icon>pie_chart</mat-icon>
+              <p>Grafik burada gösterilecek (NGX-Charts)</p>
+              <div class="category-list" *ngIf="dashboardData.expensesByCategory.length > 0">
+                <div class="category-item" *ngFor="let cat of dashboardData.expensesByCategory">
+                  <span class="category-color" [style.background-color]="cat.categoryColor || '#3f51b5'"></span>
+                  <span class="category-name">{{ cat.categoryName }}</span>
+                  <span class="category-amount">{{ cat.amount | currency:'TRY':'symbol':'1.2-2' }}</span>
+                  <span class="category-percentage">({{ cat.percentage | number:'1.1-1' }}%)</span>
+                </div>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- Monthly Trends -->
+        <mat-card class="chart-card">
+          <mat-card-header>
+            <mat-card-title>Aylık Trendler</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="chart-placeholder">
+              <mat-icon>show_chart</mat-icon>
+              <p>Grafik burada gösterilecek (NGX-Charts)</p>
+              <div class="trend-list" *ngIf="dashboardData.monthlyTrends.length > 0">
+                <div class="trend-item" *ngFor="let trend of dashboardData.monthlyTrends">
+                  <span class="trend-month">{{ trend.month }}</span>
+                  <span class="trend-income">Gelir: {{ trend.income | currency:'TRY':'symbol':'1.0-0' }}</span>
+                  <span class="trend-expense">Gider: {{ trend.expense | currency:'TRY':'symbol':'1.0-0' }}</span>
+                </div>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+
+      <div class="chart-row">
+        <!-- Expenses by Payment Method -->
+        <mat-card class="chart-card full-width">
+          <mat-card-header>
+            <mat-card-title>Ödeme Yöntemlerine Göre Giderler</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="chart-placeholder">
+              <mat-icon>payment</mat-icon>
+              <p>Grafik burada gösterilecek (NGX-Charts)</p>
+              <div class="payment-list" *ngIf="dashboardData.expensesByPaymentMethod.length > 0">
+                <div class="payment-item" *ngFor="let pm of dashboardData.expensesByPaymentMethod">
+                  <span class="payment-name">{{ pm.paymentMethodName }}</span>
+                  <span class="payment-amount">{{ pm.amount | currency:'TRY':'symbol':'1.2-2' }}</span>
+                  <span class="payment-percentage">({{ pm.percentage | number:'1.1-1' }}%)</span>
+                </div>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+  </section>
+
+  <!-- Loading Template -->
+  <ng-template #loading>
+    <div class="loading-container">
+      <mat-spinner></mat-spinner>
+      <p>Yükleniyor...</p>
+    </div>
+  </ng-template>
+
+  <!-- Error Message -->
+  <div class="error-container" *ngIf="error">
+    <mat-card class="error-card">
+      <mat-card-content>
+        <mat-icon color="warn">error</mat-icon>
+        <h3>Hata</h3>
+        <p>{{ error }}</p>
+        <button mat-raised-button color="primary" (click)="loadDashboard()">Tekrar Dene</button>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
