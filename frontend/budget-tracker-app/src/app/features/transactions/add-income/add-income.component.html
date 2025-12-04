@@ -1,0 +1,94 @@
+<div class="add-income-container">
+  <div class="form-card">
+    <div class="form-header">
+      <h2>Gelir Ekle</h2>
+      <p>Yeni bir gelir kaydı oluşturun</p>
+    </div>
+
+    <form [formGroup]="incomeForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="amount">Tutar *</label>
+        <input
+          type="number"
+          id="amount"
+          formControlName="amount"
+          placeholder="0.00"
+          step="0.01"
+          min="0"
+        >
+        <div class="error-message" *ngIf="incomeForm.get('amount')?.invalid && incomeForm.get('amount')?.touched">
+          Geçerli bir tutar giriniz
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="transactionDate">Tarih *</label>
+        <input
+          type="date"
+          id="transactionDate"
+          formControlName="transactionDate"
+        >
+        <div class="error-message" *ngIf="incomeForm.get('transactionDate')?.invalid && incomeForm.get('transactionDate')?.touched">
+          Tarih seçiniz
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="description">Açıklama *</label>
+        <input
+          type="text"
+          id="description"
+          formControlName="description"
+          placeholder="Örn: Maaş, Bonus, vb."
+        >
+        <div class="error-message" *ngIf="incomeForm.get('description')?.invalid && incomeForm.get('description')?.touched">
+          Açıklama giriniz
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="categoryId">Kategori</label>
+        <select id="categoryId" formControlName="categoryId">
+          <option value="">Kategori seçiniz (opsiyonel)</option>
+          <option *ngFor="let category of categories" [value]="category.id">
+            {{ category.name }}
+          </option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="paymentMethodId">Ödeme Yöntemi</label>
+        <select id="paymentMethodId" formControlName="paymentMethodId">
+          <option value="">Ödeme yöntemi seçiniz (opsiyonel)</option>
+          <option *ngFor="let method of paymentMethods" [value]="method.id">
+            {{ method.name }}
+          </option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="notes">Notlar</label>
+        <textarea
+          id="notes"
+          formControlName="notes"
+          rows="3"
+          placeholder="Ek notlar (opsiyonel)"
+        ></textarea>
+      </div>
+
+      <div class="error-message" *ngIf="errorMessage">
+        {{ errorMessage }}
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn btn-secondary" (click)="cancel()" [disabled]="isLoading">
+          İptal
+        </button>
+        <button type="submit" class="btn btn-primary" [disabled]="incomeForm.invalid || isLoading">
+          <span *ngIf="!isLoading">Kaydet</span>
+          <span *ngIf="isLoading">Kaydediliyor...</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

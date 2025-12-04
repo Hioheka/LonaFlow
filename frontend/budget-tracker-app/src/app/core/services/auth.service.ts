@@ -8,7 +8,7 @@ import { Router } from '@angular/router';
   providedIn: 'root'
 })
 export class AuthService {
-  private readonly API_URL = 'http://localhost:5000/api';
+  private readonly API_URL = 'https://localhost:62076/api';
   private currentUserSubject = new BehaviorSubject<AuthResponse | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
 
@@ -33,7 +33,7 @@ export class AuthService {
   }
 
   logout(): void {
-    localStorage.removeItem('currentUser');
+    sessionStorage.removeItem('currentUser');
     this.currentUserSubject.next(null);
     this.router.navigate(['/auth/login']);
   }
@@ -52,12 +52,12 @@ export class AuthService {
   }
 
   private setUser(user: AuthResponse): void {
-    localStorage.setItem('currentUser', JSON.stringify(user));
+    sessionStorage.setItem('currentUser', JSON.stringify(user));
     this.currentUserSubject.next(user);
   }
 
   private getUserFromStorage(): AuthResponse | null {
-    const userStr = localStorage.getItem('currentUser');
+    const userStr = sessionStorage.getItem('currentUser');
     return userStr ? JSON.parse(userStr) : null;
   }
 }
