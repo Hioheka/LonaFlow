@@ -1,0 +1,108 @@
+<div class="home-container">
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-content">
+      <div class="logo-container">
+        <div class="logo">
+          <span class="logo-icon">💳</span>
+          <h1 class="logo-text">LonaFlow</h1>
+        </div>
+      </div>
+      <h2 class="hero-title">Bütçenizi Akıllıca Yönetin</h2>
+      <p class="hero-subtitle">
+        Gelir ve giderlerinizi takip edin, finansal hedeflerinize ulaşın ve
+        paranızın kontrolünü elinize alın.
+      </p>
+      <div class="cta-buttons">
+        <a routerLink="/auth/register" class="btn btn-primary">
+          <span>Hemen Başla</span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        </a>
+        <a routerLink="/auth/login" class="btn btn-secondary">
+          <span>Giriş Yap</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="hero-visual">
+      <div class="card-mockup">
+        <div class="mockup-header">
+          <div class="mockup-dots">
+            <span class="dot dot-1"></span>
+            <span class="dot dot-2"></span>
+            <span class="dot dot-3"></span>
+          </div>
+          <span class="mockup-title">Bütçe Özeti</span>
+        </div>
+        <div class="mockup-content">
+          <div class="balance-card">
+            <div class="balance-label">Toplam Bakiye</div>
+            <div class="balance-amount">₺24,580</div>
+          </div>
+          <div class="stats-row">
+            <div class="stat-item stat-income">
+              <div class="stat-icon">↑</div>
+              <div class="stat-details">
+                <div class="stat-label">Gelir</div>
+                <div class="stat-value">₺15,000</div>
+              </div>
+            </div>
+            <div class="stat-item stat-expense">
+              <div class="stat-icon">↓</div>
+              <div class="stat-details">
+                <div class="stat-label">Gider</div>
+                <div class="stat-value">₺8,420</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features-section">
+    <div class="section-header">
+      <h2 class="section-title">Neden LonaFlow?</h2>
+      <p class="section-subtitle">
+        Finansal özgürlüğünüze giden yolda size yardımcı olacak güçlü özellikler
+      </p>
+    </div>
+
+    <div class="features-grid">
+      @for (feature of features; track feature.title) {
+        <div class="feature-card">
+          <div class="feature-icon">{{ feature.icon }}</div>
+          <h3 class="feature-title">{{ feature.title }}</h3>
+          <p class="feature-description">{{ feature.description }}</p>
+        </div>
+      }
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="cta-section">
+    <div class="cta-content">
+      <h2 class="cta-title">Finansal Kontrolü Elinize Alın</h2>
+      <p class="cta-subtitle">
+        Hemen ücretsiz hesap oluşturun ve bütçenizi yönetmeye başlayın
+      </p>
+      <a routerLink="/auth/register" class="btn btn-large">
+        Ücretsiz Başla
+      </a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-logo">
+        <span class="logo-icon">💳</span>
+        <span class="logo-text">LonaFlow</span>
+      </div>
+      <p class="footer-text">© 2025 LonaFlow. Tüm hakları saklıdır.</p>
+    </div>
+  </footer>
+</div>
