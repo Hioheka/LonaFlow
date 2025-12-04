@@ -130,10 +130,15 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI(c =>
     {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "BudgetTracker API v1");
+        c.RoutePrefix = string.Empty; // Swagger UI'ı root path'de aç (/)
     });
 }
 
-app.UseHttpsRedirection();
+// Development ortamında HTTPS yönlendirmesini devre dışı bırak
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
 app.UseCors("AllowAngular");
 app.UseAuthentication();
 app.UseAuthorization();
