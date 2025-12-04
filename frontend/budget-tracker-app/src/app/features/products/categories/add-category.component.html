@@ -1,0 +1,114 @@
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+      <div class="card shadow">
+        <div class="card-header bg-success text-white">
+          <h3 class="mb-0">
+            <i class="bi bi-tags me-2"></i>
+            Kategori Ekle
+          </h3>
+        </div>
+        <div class="card-body">
+          @if (successMessage) {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+              <i class="bi bi-check-circle me-2"></i>
+              {{ successMessage }}
+            </div>
+          }
+
+          @if (errorMessage) {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+              <i class="bi bi-exclamation-triangle me-2"></i>
+              {{ errorMessage }}
+            </div>
+          }
+
+          <form [formGroup]="categoryForm" (ngSubmit)="onSubmit()">
+            <div class="mb-3">
+              <label for="name" class="form-label">
+                Kategori Adı <span class="text-danger">*</span>
+              </label>
+              <input
+                type="text"
+                class="form-control"
+                id="name"
+                formControlName="name"
+                placeholder="Örn: Ev Kirası, Netflix, Pencere Tamiri, Market"
+                [class.is-invalid]="categoryForm.get('name')?.invalid && categoryForm.get('name')?.touched">
+              @if (categoryForm.get('name')?.invalid && categoryForm.get('name')?.touched) {
+                <div class="invalid-feedback">
+                  @if (categoryForm.get('name')?.errors?.['required']) {
+                    Kategori adı zorunludur
+                  }
+                  @if (categoryForm.get('name')?.errors?.['minlength']) {
+                    En az 2 karakter olmalıdır
+                  }
+                </div>
+              }
+            </div>
+
+            <div class="mb-3">
+              <label for="color" class="form-label">
+                Renk <span class="text-danger">*</span>
+              </label>
+              <div class="d-flex flex-wrap gap-2 mb-2">
+                @for (color of colorOptions; track color.value) {
+                  <div
+                    class="color-option"
+                    [class.selected]="categoryForm.get('color')?.value === color.value"
+                    [style.background-color]="color.value"
+                    (click)="categoryForm.get('color')?.setValue(color.value)"
+                    [title]="color.label">
+                  </div>
+                }
+              </div>
+              <div class="form-text">
+                <i class="bi bi-info-circle me-1"></i>
+                Kategoriniz için bir renk seçin
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <label for="description" class="form-label">
+                Açıklama
+              </label>
+              <textarea
+                class="form-control"
+                id="description"
+                formControlName="description"
+                rows="3"
+                placeholder="Kategori hakkında ek bilgiler..."></textarea>
+              <div class="form-text">
+                <i class="bi bi-info-circle me-1"></i>
+                İsteğe bağlı: Kategori hakkında detaylı bilgi
+              </div>
+            </div>
+
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                (click)="onCancel()"
+                [disabled]="isSubmitting">
+                <i class="bi bi-x-circle me-2"></i>
+                İptal
+              </button>
+              <button
+                type="submit"
+                class="btn btn-success"
+                [disabled]="categoryForm.invalid || isSubmitting">
+                <i class="bi bi-check-circle me-2"></i>
+                @if (isSubmitting) {
+                  <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                  Kaydediliyor...
+                } @else {
+                  Kaydet
+                }
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

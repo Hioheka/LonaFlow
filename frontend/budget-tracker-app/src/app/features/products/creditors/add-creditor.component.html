@@ -1,0 +1,109 @@
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+      <div class="card shadow">
+        <div class="card-header bg-info text-white">
+          <h3 class="mb-0">
+            <i class="bi bi-bank me-2"></i>
+            Alacaklı/Banka Ekle
+          </h3>
+        </div>
+        <div class="card-body">
+          @if (successMessage) {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+              <i class="bi bi-check-circle me-2"></i>
+              {{ successMessage }}
+            </div>
+          }
+
+          @if (errorMessage) {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+              <i class="bi bi-exclamation-triangle me-2"></i>
+              {{ errorMessage }}
+            </div>
+          }
+
+          <form [formGroup]="creditorForm" (ngSubmit)="onSubmit()">
+            <div class="mb-3">
+              <label for="name" class="form-label">
+                Alacaklı/Banka Adı <span class="text-danger">*</span>
+              </label>
+              <input
+                type="text"
+                class="form-control"
+                id="name"
+                formControlName="name"
+                placeholder="Örn: Akbank, Ziraat Bankası, Ev Sahibi, Faturamatik"
+                [class.is-invalid]="creditorForm.get('name')?.invalid && creditorForm.get('name')?.touched">
+              @if (creditorForm.get('name')?.invalid && creditorForm.get('name')?.touched) {
+                <div class="invalid-feedback">
+                  @if (creditorForm.get('name')?.errors?.['required']) {
+                    Alacaklı/Banka adı zorunludur
+                  }
+                  @if (creditorForm.get('name')?.errors?.['minlength']) {
+                    En az 2 karakter olmalıdır
+                  }
+                </div>
+              }
+            </div>
+
+            <div class="mb-3">
+              <label for="contactInfo" class="form-label">
+                İletişim Bilgisi
+              </label>
+              <input
+                type="text"
+                class="form-control"
+                id="contactInfo"
+                formControlName="contactInfo"
+                placeholder="Telefon, e-posta veya adres">
+              <div class="form-text">
+                <i class="bi bi-info-circle me-1"></i>
+                İsteğe bağlı: Telefon, e-posta veya adres bilgisi
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <label for="description" class="form-label">
+                Açıklama
+              </label>
+              <textarea
+                class="form-control"
+                id="description"
+                formControlName="description"
+                rows="3"
+                placeholder="Alacaklı/Banka hakkında ek bilgiler..."></textarea>
+              <div class="form-text">
+                <i class="bi bi-info-circle me-1"></i>
+                İsteğe bağlı: Hesap numarası, şube bilgisi, anlaşma detayları vb.
+              </div>
+            </div>
+
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                (click)="onCancel()"
+                [disabled]="isSubmitting">
+                <i class="bi bi-x-circle me-2"></i>
+                İptal
+              </button>
+              <button
+                type="submit"
+                class="btn btn-info"
+                [disabled]="creditorForm.invalid || isSubmitting">
+                <i class="bi bi-check-circle me-2"></i>
+                @if (isSubmitting) {
+                  <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                  Kaydediliyor...
+                } @else {
+                  Kaydet
+                }
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
