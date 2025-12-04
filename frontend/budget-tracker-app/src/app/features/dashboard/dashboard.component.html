@@ -13,6 +13,33 @@
     <p class="welcome-message">Hoş geldiniz! Bu sayfa geliştiriime aşamasındadır.</p>
   </div>
 
+  <!-- Quick Actions -->
+  <section class="quick-actions">
+    <h2>Hızlı İşlemler</h2>
+    <div class="action-buttons">
+      <button mat-raised-button color="primary" [routerLink]="['/products/payment-methods/add']">
+        <mat-icon>credit_card</mat-icon>
+        Ödeme Yöntemi Ekle
+      </button>
+      <button mat-raised-button color="accent" [routerLink]="['/products/categories/add']">
+        <mat-icon>category</mat-icon>
+        Kategori Ekle
+      </button>
+      <button mat-raised-button color="warn" [routerLink]="['/products/creditors/add']">
+        <mat-icon>business</mat-icon>
+        Alacaklı/Banka Ekle
+      </button>
+      <button mat-raised-button [routerLink]="['/transactions/add-income']">
+        <mat-icon>add_circle</mat-icon>
+        Gelir Ekle
+      </button>
+      <button mat-raised-button [routerLink]="['/transactions/add-expense']">
+        <mat-icon>remove_circle</mat-icon>
+        Gider Ekle
+      </button>
+    </div>
+  </section>
+
   <!-- Genel Bakış Section -->
   <section class="overview-section">
     <h2>Genel Bakış</h2>

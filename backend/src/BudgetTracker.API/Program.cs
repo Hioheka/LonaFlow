@@ -2,6 +2,7 @@ using System.Text;
 using BudgetTracker.Core.Entities;
 using BudgetTracker.Core.Interfaces;
 using BudgetTracker.Data.Context;
+using BudgetTracker.Data.Extensions;
 using BudgetTracker.Data.Repositories;
 using BudgetTracker.Services.BackgroundServices;
 using BudgetTracker.Services.Interfaces;
@@ -143,5 +144,8 @@ app.UseCors("AllowAngular");
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+
+// Seed Database
+await app.Services.SeedDatabaseAsync();
 
 app.Run();

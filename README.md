@@ -84,6 +84,12 @@ dotnet ef database update --project ../BudgetTracker.Data/BudgetTracker.Data.csp
 dotnet run
 # API şu adreste çalışacak: https://localhost:5001
 # Swagger UI: https://localhost:5001/swagger
+
+# Not: İlk çalıştırmada otomatik olarak seed data yüklenecektir
+# - Demo kullanıcı
+# - Türkiye'deki bankalar
+# - Örnek kategoriler
+# - Örnek ödeme yöntemleri
 ```
 
 ### 2. Frontend Kurulumu
@@ -122,6 +128,19 @@ ng serve
 
 ## 📱 Kullanım
 
+### Demo Kullanıcı 🎭
+
+Uygulamayı hızlıca test etmek için hazır demo kullanıcısı:
+
+**Email:** demo@lonaflow.com
+**Şifre:** Demo123!
+
+Demo kullanıcı ile birlikte otomatik olarak şunlar yüklenmiştir:
+- ✅ **11 Türk Bankası:** Akbank, Garanti BBVA, İş Bankası, Yapı Kredi, Ziraat Bankası, Halkbank, Vakıfbank, QNB Finansbank, Denizbank, TEB, ING
+- ✅ **Fatura Alacaklıları:** Ev Sahibi, Elektrik, Su, Doğalgaz şirketleri
+- ✅ **11 Ödeme Yöntemi:** Kredi kartları, krediler, KMH'ler ve nakit
+- ✅ **18 Kategori:** Kira, Market, Faturalar, Ulaşım, Sağlık, Eğitim, Eğlence, Abonelikler vb.
+
 ### 1. Kayıt Ol
 - Uygulamayı açın
 - "Kayıt Ol" butonuna tıklayın
@@ -129,12 +148,12 @@ ng serve
 - "Kayıt Ol" butonuna tıklayın
 
 ### 2. Giriş Yap
-- Email ve şifrenizi girin
+- Email ve şifrenizi girin (veya demo kullanıcıyı kullanın)
 - "Giriş Yap" butonuna tıklayın
 
 ### 3. Dashboard
 - Giriş yaptıktan sonra Dashboard sayfasına yönlendirileceksiniz
-- (Not: Dashboard UI henüz geliştirilme aşamasındadır)
+- Hızlı işlemler bölümünden kategori, ödeme yöntemi, alacaklı ve işlem ekleyebilirsiniz
 
 ## 🔧 API Endpoints
 
@@ -220,14 +239,63 @@ Uygulama, her saat başı çalışan bir background service içerir:
 - Bir sonraki vade tarihini hesaplar
 - İşlem kayıtlarını oluşturur
 
+## 🎁 Seed Data (Otomatik Yüklenen Veriler)
+
+Backend ilk kez çalıştırıldığında otomatik olarak şu veriler yüklenir:
+
+### 🏦 Bankalar ve Alacaklılar (15 adet)
+- Akbank, Garanti BBVA, İş Bankası, Yapı Kredi, Ziraat Bankası
+- Halkbank, Vakıfbank, QNB Finansbank, Denizbank, TEB, ING
+- Ev Sahibi, Elektrik Dağıtım Şirketi, Su ve Kanalizasyon İdaresi, Doğalgaz Dağıtım Şirketi
+
+### 💳 Ödeme Yöntemleri (11 adet)
+**Kredi Kartları:**
+- Akbank Kredi Kartı (Maximum, Axess)
+- Garanti BBVA Kredi Kartı (Bonus, Wings)
+- İş Bankası Kredi Kartı
+- Yapı Kredi WorldCard
+
+**Krediler:**
+- Akbank İhtiyaç Kredisi
+- Ziraat Bankası Konut Kredisi
+- Garanti BBVA Taşıt Kredisi
+
+**KMH ve Nakit:**
+- Akbank KMH, İş Bankası KMH
+- Nakit, Banka Kartı (Vadesiz)
+
+### 📂 Kategoriler (18 adet)
+
+**Gider Kategorileri:**
+- Kira (Ev, ofis veya işyeri kirası)
+- Market (Gıda ve temizlik)
+- Elektrik, Su, Doğalgaz (Faturalar)
+- İnternet (İnternet ve telefon)
+- Ulaşım (Yakıt, toplu taşıma)
+- Sağlık (İlaç, doktor)
+- Eğitim (Okul, kurs)
+- Eğlence (Sinema, tiyatro)
+- Giyim (Kıyafet, ayakkabı)
+- Abonelikler (Netflix, Spotify, YouTube Premium)
+- Restoran & Cafe
+- Tamirat & Bakım
+- Sigorta
+
+**Gelir Kategorileri:**
+- Maaş
+- Yatırım Geliri
+- Serbest Çalışma
+
 ## 📝 Gelecek Geliştirmeler
 
 ### UI Components (Yüksek Öncelik)
+- [x] Ürün ekleme sayfaları (PaymentMethod, Category, Creditor)
+- [x] Dashboard hızlı işlemler bölümü
 - [ ] Dashboard grafikler (Pasta, Çizgi, Bar grafikleri)
 - [ ] KPI kartları (Toplam gelir, gider, bakiye, tasarruf oranı)
 - [ ] Transaction list ve form sayfaları
 - [ ] Recurring transaction yönetim sayfası
-- [ ] Category/Creditor/PaymentMethod yönetim sayfaları
+- [ ] Category/Creditor/PaymentMethod yönetim sayfaları (listeleme ve düzenleme)
 
 ### Ek Özellikler
 - [ ] Excel export
