@@ -2,25 +2,41 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { CreditorService } from '../../../core/services/creditor.service';
 
 @Component({
   selector: 'app-add-creditor',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatIconModule,
+    MatProgressSpinnerModule,
+    MatSnackBarModule
+  ],
   templateUrl: './add-creditor.component.html',
   styleUrls: ['./add-creditor.component.scss']
 })
 export class AddCreditorComponent {
   creditorForm: FormGroup;
-  errorMessage = '';
-  successMessage = '';
   isSubmitting = false;
 
   constructor(
     private fb: FormBuilder,
     private creditorService: CreditorService,
-    private router: Router
+    private router: Router,
+    private snackBar: MatSnackBar
   ) {
     this.creditorForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(2)]],
@@ -32,19 +48,27 @@ export class AddCreditorComponent {
   onSubmit(): void {
     if (this.creditorForm.valid && !this.isSubmitting) {
       this.isSubmitting = true;
-      this.errorMessage = '';
-      this.successMessage = '';
 
       this.creditorService.createCreditor(this.creditorForm.value).subscribe({
         next: () => {
-          this.successMessage = 'Alacaklı/Banka başarıyla eklendi!';
+          this.snackBar.open('Alacaklı/Banka başarıyla eklendi!', 'Kapat', {
+            duration: 3000,
+            horizontalPosition: 'end',
+            verticalPosition: 'top'
+          });
           this.isSubmitting = false;
-          setTimeout(() => {
-            this.router.navigate(['/dashboard']);
-          }, 1500);
+          this.router.navigate(['/dashboard']);
         },
         error: (error) => {
-          this.errorMessage = error.error?.message || 'Alacaklı/Banka eklenirken bir hata oluştu.';
+          this.snackBar.open(
+            error.error?.message || 'Alacaklı/Banka eklenirken bir hata oluştu.',
+            'Kapat',
+            {
+              duration: 5000,
+              horizontalPosition: 'end',
+              verticalPosition: 'top'
+            }
+          );
           this.isSubmitting = false;
         }
       });
@@ -53,5 +77,16 @@ export class AddCreditorComponent {
 
   onCancel(): void {
     this.router.navigate(['/dashboard']);
+  }
+
+  getErrorMessage(field: string): string {
+    const control = this.creditorForm.get(field);
+    if (control?.hasError('required')) {
+      return 'Bu alan zorunludur';
+    }
+    if (control?.hasError('minlength')) {
+      return 'En az 2 karakter olmalıdır';
+    }
+    return '';
   }
 }

@@ -2,13 +2,36 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 import { TransactionService } from '../../../core/services/transaction.service';
 import { TransactionType, Category, PaymentMethod } from '../../../shared/models/transaction.model';
 
 @Component({
   selector: 'app-add-income',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatButtonModule,
+    MatIconModule,
+    MatProgressSpinnerModule,
+    MatSnackBarModule,
+    MatDatepickerModule,
+    MatNativeDateModule
+  ],
   templateUrl: './add-income.component.html',
   styleUrls: ['./add-income.component.scss']
 })
@@ -17,16 +40,16 @@ export class AddIncomeComponent implements OnInit {
   categories: Category[] = [];
   paymentMethods: PaymentMethod[] = [];
   isLoading = false;
-  errorMessage = '';
 
   constructor(
     private fb: FormBuilder,
     private transactionService: TransactionService,
-    private router: Router
+    private router: Router,
+    private snackBar: MatSnackBar
   ) {
     this.incomeForm = this.fb.group({
       amount: ['', [Validators.required, Validators.min(0.01)]],
-      transactionDate: [new Date().toISOString().split('T')[0], Validators.required],
+      transactionDate: [new Date(), Validators.required],
       description: ['', Validators.required],
       notes: [''],
       categoryId: [''],
@@ -46,6 +69,7 @@ export class AddIncomeComponent implements OnInit {
       },
       error: (error) => {
         console.error('Kategoriler yüklenemedi:', error);
+        this.snackBar.open('Kategoriler yüklenemedi', 'Kapat', { duration: 3000 });
       }
     });
   }
@@ -57,23 +81,23 @@ export class AddIncomeComponent implements OnInit {
       },
       error: (error) => {
         console.error('Ödeme yöntemleri yüklenemedi:', error);
+        this.snackBar.open('Ödeme yöntemleri yüklenemedi', 'Kapat', { duration: 3000 });
       }
     });
   }
 
   onSubmit(): void {
-    if (this.incomeForm.invalid) {
+    if (this.incomeForm.invalid || this.isLoading) {
       return;
     }
 
     this.isLoading = true;
-    this.errorMessage = '';
 
     const formValue = this.incomeForm.value;
     const request = {
       type: TransactionType.Income,
       amount: Number(formValue.amount),
-      transactionDate: new Date(formValue.transactionDate),
+      transactionDate: formValue.transactionDate,
       description: formValue.description,
       notes: formValue.notes || undefined,
       categoryId: formValue.categoryId ? Number(formValue.categoryId) : undefined,
@@ -82,11 +106,24 @@ export class AddIncomeComponent implements OnInit {
 
     this.transactionService.createTransaction(request).subscribe({
       next: () => {
+        this.snackBar.open('Gelir başarıyla eklendi!', 'Kapat', {
+          duration: 3000,
+          horizontalPosition: 'end',
+          verticalPosition: 'top'
+        });
         this.router.navigate(['/dashboard']);
       },
       error: (error) => {
         this.isLoading = false;
-        this.errorMessage = 'Gelir eklenirken bir hata oluştu. Lütfen tekrar deneyin.';
+        this.snackBar.open(
+          error.error?.message || 'Gelir eklenirken bir hata oluştu.',
+          'Kapat',
+          {
+            duration: 5000,
+            horizontalPosition: 'end',
+            verticalPosition: 'top'
+          }
+        );
         console.error('Gelir ekleme hatası:', error);
       }
     });
@@ -94,5 +131,16 @@ export class AddIncomeComponent implements OnInit {
 
   cancel(): void {
     this.router.navigate(['/dashboard']);
+  }
+
+  getErrorMessage(field: string): string {
+    const control = this.incomeForm.get(field);
+    if (control?.hasError('required')) {
+      return 'Bu alan zorunludur';
+    }
+    if (control?.hasError('min')) {
+      return 'Geçerli bir tutar giriniz';
+    }
+    return '';
   }
 }
