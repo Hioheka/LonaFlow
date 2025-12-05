@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { MatDialogRef, MatDialogModule } from '@angular/material/dialog';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -17,6 +17,7 @@ import { CategoryService } from '../../../core/services/category.service';
   imports: [
     CommonModule,
     ReactiveFormsModule,
+    MatDialogModule,
     MatCardModule,
     MatFormFieldModule,
     MatInputModule,
@@ -47,7 +48,7 @@ export class AddCategoryComponent {
   constructor(
     private fb: FormBuilder,
     private categoryService: CategoryService,
-    private router: Router,
+    private dialogRef: MatDialogRef<AddCategoryComponent>,
     private snackBar: MatSnackBar
   ) {
     this.categoryForm = this.fb.group({
@@ -73,9 +74,7 @@ export class AddCategoryComponent {
             verticalPosition: 'top',
             panelClass: ['success-snackbar']
           });
-          setTimeout(() => {
-            this.router.navigate(['/dashboard']);
-          }, 1500);
+          this.dialogRef.close(true);
         },
         error: (error) => {
           this.isSubmitting = false;
@@ -95,6 +94,6 @@ export class AddCategoryComponent {
   }
 
   onCancel(): void {
-    this.router.navigate(['/dashboard']);
+    this.dialogRef.close();
   }
 }

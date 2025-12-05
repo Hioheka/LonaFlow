@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { MatDialogRef, MatDialogModule } from '@angular/material/dialog';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -16,6 +16,7 @@ import { CreditorService } from '../../../core/services/creditor.service';
   imports: [
     CommonModule,
     ReactiveFormsModule,
+    MatDialogModule,
     MatCardModule,
     MatFormFieldModule,
     MatInputModule,
@@ -33,7 +34,7 @@ export class AddCreditorComponent {
   constructor(
     private fb: FormBuilder,
     private creditorService: CreditorService,
-    private router: Router,
+    private dialogRef: MatDialogRef<AddCreditorComponent>,
     private snackBar: MatSnackBar
   ) {
     this.creditorForm = this.fb.group({
@@ -55,9 +56,7 @@ export class AddCreditorComponent {
             verticalPosition: 'top',
             panelClass: ['success-snackbar']
           });
-          setTimeout(() => {
-            this.router.navigate(['/dashboard']);
-          }, 1500);
+          this.dialogRef.close(true);
         },
         error: (error) => {
           this.isSubmitting = false;
@@ -77,6 +76,6 @@ export class AddCreditorComponent {
   }
 
   onCancel(): void {
-    this.router.navigate(['/dashboard']);
+    this.dialogRef.close();
   }
 }

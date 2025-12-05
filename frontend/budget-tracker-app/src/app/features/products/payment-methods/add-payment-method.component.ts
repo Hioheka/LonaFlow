@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { MatDialogRef, MatDialogModule } from '@angular/material/dialog';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -18,6 +18,7 @@ import { PaymentMethodType } from '../../../shared/models/transaction.model';
   imports: [
     CommonModule,
     ReactiveFormsModule,
+    MatDialogModule,
     MatCardModule,
     MatFormFieldModule,
     MatInputModule,
@@ -42,7 +43,7 @@ export class AddPaymentMethodComponent {
   constructor(
     private fb: FormBuilder,
     private paymentMethodService: PaymentMethodService,
-    private router: Router,
+    private dialogRef: MatDialogRef<AddPaymentMethodComponent>,
     private snackBar: MatSnackBar
   ) {
     this.paymentMethodForm = this.fb.group({
@@ -64,9 +65,7 @@ export class AddPaymentMethodComponent {
             verticalPosition: 'top',
             panelClass: ['success-snackbar']
           });
-          setTimeout(() => {
-            this.router.navigate(['/dashboard']);
-          }, 1500);
+          this.dialogRef.close(true);
         },
         error: (error) => {
           this.isSubmitting = false;
@@ -86,7 +85,7 @@ export class AddPaymentMethodComponent {
   }
 
   onCancel(): void {
-    this.router.navigate(['/dashboard']);
+    this.dialogRef.close();
   }
 
   getTypeIcon(typeValue: number): string {

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { MatDialogRef, MatDialogModule } from '@angular/material/dialog';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -21,6 +21,7 @@ import { TransactionType, Category, PaymentMethod, Creditor } from '../../../sha
   imports: [
     CommonModule,
     ReactiveFormsModule,
+    MatDialogModule,
     MatCardModule,
     MatFormFieldModule,
     MatInputModule,
@@ -45,7 +46,7 @@ export class AddExpenseComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private transactionService: TransactionService,
-    private router: Router,
+    private dialogRef: MatDialogRef<AddExpenseComponent>,
     private snackBar: MatSnackBar
   ) {
     this.expenseForm = this.fb.group({
@@ -127,7 +128,7 @@ export class AddExpenseComponent implements OnInit {
           horizontalPosition: 'end',
           verticalPosition: 'top'
         });
-        this.router.navigate(['/dashboard']);
+        this.dialogRef.close(true);
       },
       error: (error) => {
         this.isLoading = false;
@@ -146,7 +147,7 @@ export class AddExpenseComponent implements OnInit {
   }
 
   cancel(): void {
-    this.router.navigate(['/dashboard']);
+    this.dialogRef.close();
   }
 
   getErrorMessage(field: string): string {
