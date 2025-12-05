@@ -7,8 +7,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatChipsModule } from '@angular/material/chips';
 import { CategoryService } from '../../../core/services/category.service';
 
 @Component({
@@ -22,8 +22,8 @@ import { CategoryService } from '../../../core/services/category.service';
     MatInputModule,
     MatButtonModule,
     MatIconModule,
-    MatProgressSpinnerModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatChipsModule
   ],
   templateUrl: './add-category.component.html',
   styleUrls: ['./add-category.component.scss']
@@ -57,6 +57,10 @@ export class AddCategoryComponent {
     });
   }
 
+  selectColor(color: string): void {
+    this.categoryForm.patchValue({ color });
+  }
+
   onSubmit(): void {
     if (this.categoryForm.valid && !this.isSubmitting) {
       this.isSubmitting = true;
@@ -66,22 +70,25 @@ export class AddCategoryComponent {
           this.snackBar.open('Kategori başarıyla eklendi!', 'Kapat', {
             duration: 3000,
             horizontalPosition: 'end',
-            verticalPosition: 'top'
+            verticalPosition: 'top',
+            panelClass: ['success-snackbar']
           });
-          this.isSubmitting = false;
-          this.router.navigate(['/dashboard']);
+          setTimeout(() => {
+            this.router.navigate(['/dashboard']);
+          }, 1500);
         },
         error: (error) => {
+          this.isSubmitting = false;
           this.snackBar.open(
             error.error?.message || 'Kategori eklenirken bir hata oluştu.',
             'Kapat',
             {
               duration: 5000,
               horizontalPosition: 'end',
-              verticalPosition: 'top'
+              verticalPosition: 'top',
+              panelClass: ['error-snackbar']
             }
           );
-          this.isSubmitting = false;
         }
       });
     }
@@ -89,20 +96,5 @@ export class AddCategoryComponent {
 
   onCancel(): void {
     this.router.navigate(['/dashboard']);
-  }
-
-  selectColor(color: string): void {
-    this.categoryForm.patchValue({ color });
-  }
-
-  getErrorMessage(field: string): string {
-    const control = this.categoryForm.get(field);
-    if (control?.hasError('required')) {
-      return 'Bu alan zorunludur';
-    }
-    if (control?.hasError('minlength')) {
-      return 'En az 2 karakter olmalıdır';
-    }
-    return '';
   }
 }

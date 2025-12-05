@@ -1,5 +1,5 @@
-<div class="page-container">
-  <mat-card class="form-card">
+<div class="payment-container">
+  <mat-card class="payment-card">
     <mat-card-header>
       <mat-card-title>
         <mat-icon>credit_card</mat-icon>
@@ -9,44 +9,52 @@
 
     <mat-card-content>
       <form [formGroup]="paymentMethodForm" (ngSubmit)="onSubmit()">
+        <!-- Ödeme Yöntemi Adı -->
         <mat-form-field appearance="outline" class="full-width">
           <mat-label>Ödeme Yöntemi Adı</mat-label>
+          <mat-icon matPrefix>payment</mat-icon>
           <input
             matInput
             formControlName="name"
             placeholder="Örn: Akbank Kredi Kartı, Ziraat Bankası Kredisi"
             required>
-          <mat-icon matPrefix>payment</mat-icon>
-          <mat-error *ngIf="paymentMethodForm.get('name')?.invalid">
-            {{ getErrorMessage('name') }}
+          <mat-error *ngIf="paymentMethodForm.get('name')?.hasError('required')">
+            Ödeme yöntemi adı zorunludur
+          </mat-error>
+          <mat-error *ngIf="paymentMethodForm.get('name')?.hasError('minlength')">
+            En az 2 karakter olmalıdır
           </mat-error>
         </mat-form-field>
 
+        <!-- Ödeme Yöntemi Türü -->
         <mat-form-field appearance="outline" class="full-width">
           <mat-label>Ödeme Yöntemi Türü</mat-label>
+          <mat-icon matPrefix>{{ getTypeIcon(paymentMethodForm.get('type')?.value) }}</mat-icon>
           <mat-select formControlName="type" required>
             <mat-option *ngFor="let type of paymentMethodTypes" [value]="type.value">
+              <mat-icon class="option-icon">{{ type.icon }}</mat-icon>
               {{ type.label }}
             </mat-option>
           </mat-select>
-          <mat-icon matPrefix>category</mat-icon>
           <mat-hint>Ödeme yönteminizin türünü seçin</mat-hint>
         </mat-form-field>
 
+        <!-- Açıklama -->
         <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Açıklama (İsteğe Bağlı)</mat-label>
+          <mat-label>Açıklama</mat-label>
+          <mat-icon matPrefix>description</mat-icon>
           <textarea
             matInput
             formControlName="description"
-            placeholder="Ödeme yöntemi hakkında ek bilgiler..."
-            rows="4"></textarea>
-          <mat-icon matPrefix>description</mat-icon>
-          <mat-hint>Hesap numarası, banka şubesi vb.</mat-hint>
+            rows="3"
+            placeholder="Ödeme yöntemi hakkında ek bilgiler..."></textarea>
+          <mat-hint>İsteğe bağlı: Hesap numarası, banka şubesi vb.</mat-hint>
         </mat-form-field>
 
-        <div class="button-row">
+        <!-- Butonlar -->
+        <div class="button-group">
           <button
-            mat-raised-button
+            mat-stroked-button
             type="button"
             (click)="onCancel()"
             [disabled]="isSubmitting">
@@ -58,9 +66,8 @@
             color="primary"
             type="submit"
             [disabled]="paymentMethodForm.invalid || isSubmitting">
-            <mat-spinner *ngIf="isSubmitting" diameter="20"></mat-spinner>
-            <mat-icon *ngIf="!isSubmitting">check</mat-icon>
-            {{ isSubmitting ? 'Kaydediliyor...' : 'Kaydet' }}
+            <mat-icon>{{isSubmitting ? 'hourglass_empty' : 'check'}}</mat-icon>
+            {{isSubmitting ? 'Kaydediliyor...' : 'Kaydet'}}
           </button>
         </div>
       </form>

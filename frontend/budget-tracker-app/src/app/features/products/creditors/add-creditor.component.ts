@@ -7,7 +7,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { CreditorService } from '../../../core/services/creditor.service';
 
@@ -22,7 +21,6 @@ import { CreditorService } from '../../../core/services/creditor.service';
     MatInputModule,
     MatButtonModule,
     MatIconModule,
-    MatProgressSpinnerModule,
     MatSnackBarModule
   ],
   templateUrl: './add-creditor.component.html',
@@ -54,22 +52,25 @@ export class AddCreditorComponent {
           this.snackBar.open('Alacaklı/Banka başarıyla eklendi!', 'Kapat', {
             duration: 3000,
             horizontalPosition: 'end',
-            verticalPosition: 'top'
+            verticalPosition: 'top',
+            panelClass: ['success-snackbar']
           });
-          this.isSubmitting = false;
-          this.router.navigate(['/dashboard']);
+          setTimeout(() => {
+            this.router.navigate(['/dashboard']);
+          }, 1500);
         },
         error: (error) => {
+          this.isSubmitting = false;
           this.snackBar.open(
             error.error?.message || 'Alacaklı/Banka eklenirken bir hata oluştu.',
             'Kapat',
             {
               duration: 5000,
               horizontalPosition: 'end',
-              verticalPosition: 'top'
+              verticalPosition: 'top',
+              panelClass: ['error-snackbar']
             }
           );
-          this.isSubmitting = false;
         }
       });
     }
@@ -77,16 +78,5 @@ export class AddCreditorComponent {
 
   onCancel(): void {
     this.router.navigate(['/dashboard']);
-  }
-
-  getErrorMessage(field: string): string {
-    const control = this.creditorForm.get(field);
-    if (control?.hasError('required')) {
-      return 'Bu alan zorunludur';
-    }
-    if (control?.hasError('minlength')) {
-      return 'En az 2 karakter olmalıdır';
-    }
-    return '';
   }
 }

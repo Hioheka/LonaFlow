@@ -1,69 +1,102 @@
-.page-container {
-  padding: 20px;
-  max-width: 800px;
-  margin: 0 auto;
+.payment-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
 }
 
-.form-card {
+.payment-card {
+  width: 100%;
+  max-width: 600px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+
   mat-card-header {
-    margin-bottom: 20px;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);
+    color: white;
+    border-radius: 4px 4px 0 0;
+    margin: -16px -16px 24px -16px;
 
     mat-card-title {
       display: flex;
       align-items: center;
-      gap: 12px;
-      font-size: 24px;
-      font-weight: 500;
+      gap: 0.5rem;
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin: 0;
 
       mat-icon {
-        font-size: 28px;
-        width: 28px;
-        height: 28px;
+        font-size: 1.75rem;
+        width: 1.75rem;
+        height: 1.75rem;
       }
     }
   }
 
   mat-card-content {
-    padding: 20px 0;
+    padding: 0 1rem 1rem;
   }
-}
-
-form {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
 }
 
 .full-width {
   width: 100%;
+  margin-bottom: 1rem;
 }
 
-.button-row {
-  display: flex;
-  justify-content: flex-end;
-  gap: 12px;
-  margin-top: 20px;
-
-  button {
+// Select with icons
+::ng-deep {
+  .mat-mdc-option {
     display: flex;
     align-items: center;
-    gap: 8px;
-    min-width: 120px;
 
-    mat-spinner {
-      display: inline-block;
-      margin-right: 8px;
+    .option-icon {
+      margin-right: 0.75rem;
+      color: rgba(0, 0, 0, 0.6);
     }
   }
 }
 
+// Buttons
+.button-group {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 2rem;
+
+  button {
+    min-width: 120px;
+    height: 42px;
+
+    mat-icon {
+      margin-right: 0.5rem;
+    }
+  }
+}
+
+// Responsive
 @media (max-width: 768px) {
-  .page-container {
-    padding: 12px;
+  .payment-container {
+    padding: 1rem;
   }
 
-  .button-row {
-    flex-direction: column;
+  .payment-card {
+    mat-card-header {
+      mat-card-title {
+        font-size: 1.25rem;
+
+        mat-icon {
+          font-size: 1.5rem;
+          width: 1.5rem;
+          height: 1.5rem;
+        }
+      }
+    }
+  }
+
+  .button-group {
+    flex-direction: column-reverse;
 
     button {
       width: 100%;

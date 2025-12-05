@@ -1,5 +1,5 @@
-<div class="page-container">
-  <mat-card class="form-card">
+<div class="creditor-container">
+  <mat-card class="creditor-card">
     <mat-card-header>
       <mat-card-title>
         <mat-icon>business</mat-icon>
@@ -9,43 +9,50 @@
 
     <mat-card-content>
       <form [formGroup]="creditorForm" (ngSubmit)="onSubmit()">
+        <!-- Alacaklı/Banka Adı -->
         <mat-form-field appearance="outline" class="full-width">
           <mat-label>Alacaklı/Banka Adı</mat-label>
+          <mat-icon matPrefix>account_balance</mat-icon>
           <input
             matInput
             formControlName="name"
-            placeholder="Örn: Akbank, Ziraat Bankası, Ev Sahibi, Faturamatik"
+            placeholder="Örn: Akbank, Ziraat Bankası, Ev Sahibi"
             required>
-          <mat-icon matPrefix>account_balance</mat-icon>
-          <mat-error *ngIf="creditorForm.get('name')?.invalid">
-            {{ getErrorMessage('name') }}
+          <mat-error *ngIf="creditorForm.get('name')?.hasError('required')">
+            Alacaklı/Banka adı zorunludur
+          </mat-error>
+          <mat-error *ngIf="creditorForm.get('name')?.hasError('minlength')">
+            En az 2 karakter olmalıdır
           </mat-error>
         </mat-form-field>
 
+        <!-- İletişim Bilgisi -->
         <mat-form-field appearance="outline" class="full-width">
-          <mat-label>İletişim Bilgisi (İsteğe Bağlı)</mat-label>
+          <mat-label>İletişim Bilgisi</mat-label>
+          <mat-icon matPrefix>contact_phone</mat-icon>
           <input
             matInput
             formControlName="contactInfo"
             placeholder="Telefon, e-posta veya adres">
-          <mat-icon matPrefix>contact_phone</mat-icon>
-          <mat-hint>Telefon, e-posta veya adres bilgisi</mat-hint>
+          <mat-hint>İsteğe bağlı: Telefon, e-posta veya adres bilgisi</mat-hint>
         </mat-form-field>
 
+        <!-- Açıklama -->
         <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Açıklama (İsteğe Bağlı)</mat-label>
+          <mat-label>Açıklama</mat-label>
+          <mat-icon matPrefix>description</mat-icon>
           <textarea
             matInput
             formControlName="description"
-            placeholder="Alacaklı/Banka hakkında ek bilgiler..."
-            rows="4"></textarea>
-          <mat-icon matPrefix>description</mat-icon>
-          <mat-hint>Hesap numarası, şube bilgisi, anlaşma detayları vb.</mat-hint>
+            rows="3"
+            placeholder="Alacaklı/Banka hakkında ek bilgiler..."></textarea>
+          <mat-hint>İsteğe bağlı: Hesap numarası, şube bilgisi, anlaşma detayları vb.</mat-hint>
         </mat-form-field>
 
-        <div class="button-row">
+        <!-- Butonlar -->
+        <div class="button-group">
           <button
-            mat-raised-button
+            mat-stroked-button
             type="button"
             (click)="onCancel()"
             [disabled]="isSubmitting">
@@ -54,12 +61,11 @@
           </button>
           <button
             mat-raised-button
-            color="primary"
+            color="accent"
             type="submit"
             [disabled]="creditorForm.invalid || isSubmitting">
-            <mat-spinner *ngIf="isSubmitting" diameter="20"></mat-spinner>
-            <mat-icon *ngIf="!isSubmitting">check</mat-icon>
-            {{ isSubmitting ? 'Kaydediliyor...' : 'Kaydet' }}
+            <mat-icon>{{isSubmitting ? 'hourglass_empty' : 'check'}}</mat-icon>
+            {{isSubmitting ? 'Kaydediliyor...' : 'Kaydet'}}
           </button>
         </div>
       </form>
