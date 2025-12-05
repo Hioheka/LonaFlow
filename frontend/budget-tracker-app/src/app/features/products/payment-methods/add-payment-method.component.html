@@ -1,112 +1,69 @@
-<div class="container py-5">
-  <div class="row justify-content-center">
-    <div class="col-md-8 col-lg-6">
-      <div class="card shadow">
-        <div class="card-header bg-primary text-white">
-          <h3 class="mb-0">
-            <i class="bi bi-credit-card me-2"></i>
-            Ödeme Yöntemi Ekle
-          </h3>
+<div class="page-container">
+  <mat-card class="form-card">
+    <mat-card-header>
+      <mat-card-title>
+        <mat-icon>credit_card</mat-icon>
+        Ödeme Yöntemi Ekle
+      </mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form [formGroup]="paymentMethodForm" (ngSubmit)="onSubmit()">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Ödeme Yöntemi Adı</mat-label>
+          <input
+            matInput
+            formControlName="name"
+            placeholder="Örn: Akbank Kredi Kartı, Ziraat Bankası Kredisi"
+            required>
+          <mat-icon matPrefix>payment</mat-icon>
+          <mat-error *ngIf="paymentMethodForm.get('name')?.invalid">
+            {{ getErrorMessage('name') }}
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Ödeme Yöntemi Türü</mat-label>
+          <mat-select formControlName="type" required>
+            <mat-option *ngFor="let type of paymentMethodTypes" [value]="type.value">
+              {{ type.label }}
+            </mat-option>
+          </mat-select>
+          <mat-icon matPrefix>category</mat-icon>
+          <mat-hint>Ödeme yönteminizin türünü seçin</mat-hint>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Açıklama (İsteğe Bağlı)</mat-label>
+          <textarea
+            matInput
+            formControlName="description"
+            placeholder="Ödeme yöntemi hakkında ek bilgiler..."
+            rows="4"></textarea>
+          <mat-icon matPrefix>description</mat-icon>
+          <mat-hint>Hesap numarası, banka şubesi vb.</mat-hint>
+        </mat-form-field>
+
+        <div class="button-row">
+          <button
+            mat-raised-button
+            type="button"
+            (click)="onCancel()"
+            [disabled]="isSubmitting">
+            <mat-icon>close</mat-icon>
+            İptal
+          </button>
+          <button
+            mat-raised-button
+            color="primary"
+            type="submit"
+            [disabled]="paymentMethodForm.invalid || isSubmitting">
+            <mat-spinner *ngIf="isSubmitting" diameter="20"></mat-spinner>
+            <mat-icon *ngIf="!isSubmitting">check</mat-icon>
+            {{ isSubmitting ? 'Kaydediliyor...' : 'Kaydet' }}
+          </button>
         </div>
-        <div class="card-body">
-          @if (successMessage) {
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-              <i class="bi bi-check-circle me-2"></i>
-              {{ successMessage }}
-            </div>
-          }
-
-          @if (errorMessage) {
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-              <i class="bi bi-exclamation-triangle me-2"></i>
-              {{ errorMessage }}
-            </div>
-          }
-
-          <form [formGroup]="paymentMethodForm" (ngSubmit)="onSubmit()">
-            <div class="mb-3">
-              <label for="name" class="form-label">
-                Ödeme Yöntemi Adı <span class="text-danger">*</span>
-              </label>
-              <input
-                type="text"
-                class="form-control"
-                id="name"
-                formControlName="name"
-                placeholder="Örn: Akbank Kredi Kartı, Ziraat Bankası Kredisi"
-                [class.is-invalid]="paymentMethodForm.get('name')?.invalid && paymentMethodForm.get('name')?.touched">
-              @if (paymentMethodForm.get('name')?.invalid && paymentMethodForm.get('name')?.touched) {
-                <div class="invalid-feedback">
-                  @if (paymentMethodForm.get('name')?.errors?.['required']) {
-                    Ödeme yöntemi adı zorunludur
-                  }
-                  @if (paymentMethodForm.get('name')?.errors?.['minlength']) {
-                    En az 2 karakter olmalıdır
-                  }
-                </div>
-              }
-            </div>
-
-            <div class="mb-3">
-              <label for="type" class="form-label">
-                Ödeme Yöntemi Türü <span class="text-danger">*</span>
-              </label>
-              <select
-                class="form-select"
-                id="type"
-                formControlName="type"
-                [class.is-invalid]="paymentMethodForm.get('type')?.invalid && paymentMethodForm.get('type')?.touched">
-                @for (type of paymentMethodTypes; track type.value) {
-                  <option [value]="type.value">{{ type.label }}</option>
-                }
-              </select>
-              <div class="form-text">
-                <i class="bi bi-info-circle me-1"></i>
-                Ödeme yönteminizin türünü seçin
-              </div>
-            </div>
-
-            <div class="mb-4">
-              <label for="description" class="form-label">
-                Açıklama
-              </label>
-              <textarea
-                class="form-control"
-                id="description"
-                formControlName="description"
-                rows="3"
-                placeholder="Ödeme yöntemi hakkında ek bilgiler..."></textarea>
-              <div class="form-text">
-                <i class="bi bi-info-circle me-1"></i>
-                İsteğe bağlı: Hesap numarası, banka şubesi vb.
-              </div>
-            </div>
-
-            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-              <button
-                type="button"
-                class="btn btn-secondary"
-                (click)="onCancel()"
-                [disabled]="isSubmitting">
-                <i class="bi bi-x-circle me-2"></i>
-                İptal
-              </button>
-              <button
-                type="submit"
-                class="btn btn-primary"
-                [disabled]="paymentMethodForm.invalid || isSubmitting">
-                <i class="bi bi-check-circle me-2"></i>
-                @if (isSubmitting) {
-                  <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                  Kaydediliyor...
-                } @else {
-                  Kaydet
-                }
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
 </div>

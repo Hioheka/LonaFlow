@@ -1,109 +1,68 @@
-<div class="container py-5">
-  <div class="row justify-content-center">
-    <div class="col-md-8 col-lg-6">
-      <div class="card shadow">
-        <div class="card-header bg-info text-white">
-          <h3 class="mb-0">
-            <i class="bi bi-bank me-2"></i>
-            Alacaklı/Banka Ekle
-          </h3>
+<div class="page-container">
+  <mat-card class="form-card">
+    <mat-card-header>
+      <mat-card-title>
+        <mat-icon>business</mat-icon>
+        Alacaklı/Banka Ekle
+      </mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form [formGroup]="creditorForm" (ngSubmit)="onSubmit()">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Alacaklı/Banka Adı</mat-label>
+          <input
+            matInput
+            formControlName="name"
+            placeholder="Örn: Akbank, Ziraat Bankası, Ev Sahibi, Faturamatik"
+            required>
+          <mat-icon matPrefix>account_balance</mat-icon>
+          <mat-error *ngIf="creditorForm.get('name')?.invalid">
+            {{ getErrorMessage('name') }}
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>İletişim Bilgisi (İsteğe Bağlı)</mat-label>
+          <input
+            matInput
+            formControlName="contactInfo"
+            placeholder="Telefon, e-posta veya adres">
+          <mat-icon matPrefix>contact_phone</mat-icon>
+          <mat-hint>Telefon, e-posta veya adres bilgisi</mat-hint>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Açıklama (İsteğe Bağlı)</mat-label>
+          <textarea
+            matInput
+            formControlName="description"
+            placeholder="Alacaklı/Banka hakkında ek bilgiler..."
+            rows="4"></textarea>
+          <mat-icon matPrefix>description</mat-icon>
+          <mat-hint>Hesap numarası, şube bilgisi, anlaşma detayları vb.</mat-hint>
+        </mat-form-field>
+
+        <div class="button-row">
+          <button
+            mat-raised-button
+            type="button"
+            (click)="onCancel()"
+            [disabled]="isSubmitting">
+            <mat-icon>close</mat-icon>
+            İptal
+          </button>
+          <button
+            mat-raised-button
+            color="primary"
+            type="submit"
+            [disabled]="creditorForm.invalid || isSubmitting">
+            <mat-spinner *ngIf="isSubmitting" diameter="20"></mat-spinner>
+            <mat-icon *ngIf="!isSubmitting">check</mat-icon>
+            {{ isSubmitting ? 'Kaydediliyor...' : 'Kaydet' }}
+          </button>
         </div>
-        <div class="card-body">
-          @if (successMessage) {
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-              <i class="bi bi-check-circle me-2"></i>
-              {{ successMessage }}
-            </div>
-          }
-
-          @if (errorMessage) {
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-              <i class="bi bi-exclamation-triangle me-2"></i>
-              {{ errorMessage }}
-            </div>
-          }
-
-          <form [formGroup]="creditorForm" (ngSubmit)="onSubmit()">
-            <div class="mb-3">
-              <label for="name" class="form-label">
-                Alacaklı/Banka Adı <span class="text-danger">*</span>
-              </label>
-              <input
-                type="text"
-                class="form-control"
-                id="name"
-                formControlName="name"
-                placeholder="Örn: Akbank, Ziraat Bankası, Ev Sahibi, Faturamatik"
-                [class.is-invalid]="creditorForm.get('name')?.invalid && creditorForm.get('name')?.touched">
-              @if (creditorForm.get('name')?.invalid && creditorForm.get('name')?.touched) {
-                <div class="invalid-feedback">
-                  @if (creditorForm.get('name')?.errors?.['required']) {
-                    Alacaklı/Banka adı zorunludur
-                  }
-                  @if (creditorForm.get('name')?.errors?.['minlength']) {
-                    En az 2 karakter olmalıdır
-                  }
-                </div>
-              }
-            </div>
-
-            <div class="mb-3">
-              <label for="contactInfo" class="form-label">
-                İletişim Bilgisi
-              </label>
-              <input
-                type="text"
-                class="form-control"
-                id="contactInfo"
-                formControlName="contactInfo"
-                placeholder="Telefon, e-posta veya adres">
-              <div class="form-text">
-                <i class="bi bi-info-circle me-1"></i>
-                İsteğe bağlı: Telefon, e-posta veya adres bilgisi
-              </div>
-            </div>
-
-            <div class="mb-4">
-              <label for="description" class="form-label">
-                Açıklama
-              </label>
-              <textarea
-                class="form-control"
-                id="description"
-                formControlName="description"
-                rows="3"
-                placeholder="Alacaklı/Banka hakkında ek bilgiler..."></textarea>
-              <div class="form-text">
-                <i class="bi bi-info-circle me-1"></i>
-                İsteğe bağlı: Hesap numarası, şube bilgisi, anlaşma detayları vb.
-              </div>
-            </div>
-
-            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-              <button
-                type="button"
-                class="btn btn-secondary"
-                (click)="onCancel()"
-                [disabled]="isSubmitting">
-                <i class="bi bi-x-circle me-2"></i>
-                İptal
-              </button>
-              <button
-                type="submit"
-                class="btn btn-info"
-                [disabled]="creditorForm.invalid || isSubmitting">
-                <i class="bi bi-check-circle me-2"></i>
-                @if (isSubmitting) {
-                  <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                  Kaydediliyor...
-                } @else {
-                  Kaydet
-                }
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
 </div>
