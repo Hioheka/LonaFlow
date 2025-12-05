@@ -1,77 +1,247 @@
 .page-container {
-  padding: 20px;
-  max-width: 800px;
-  margin: 0 auto;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
 }
 
 .form-card {
+  width: 100%;
+  max-width: 650px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  border-radius: 16px;
+
   mat-card-header {
-    margin-bottom: 20px;
+    padding: 2rem;
+    background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
+    color: white;
+    border-radius: 16px 16px 0 0;
+    margin: -16px -16px 24px -16px;
 
     mat-card-title {
       display: flex;
       align-items: center;
       gap: 12px;
-      font-size: 24px;
-      font-weight: 500;
+      font-size: 28px;
+      font-weight: 600;
+      margin: 0;
 
       mat-icon {
-        font-size: 28px;
-        width: 28px;
-        height: 28px;
+        font-size: 32px;
+        width: 32px;
+        height: 32px;
+        color: white;
       }
     }
 
     mat-card-subtitle {
-      margin-left: 40px;
-      color: rgba(0, 0, 0, 0.6);
+      margin-left: 44px;
+      margin-top: 8px;
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 14px;
     }
   }
 
   mat-card-content {
-    padding: 20px 0;
+    padding: 1.5rem;
   }
 }
 
 form {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 1.25rem;
 }
 
 .full-width {
   width: 100%;
 }
 
+// Material Form Field Customization
+::ng-deep {
+  .mat-mdc-form-field {
+    .mat-mdc-text-field-wrapper {
+      background-color: #f8f9fa;
+      border-radius: 8px;
+    }
+
+    &.mat-focused {
+      .mat-mdc-text-field-wrapper {
+        background-color: white;
+      }
+    }
+  }
+
+  // Icon colors
+  .mat-icon {
+    color: #eb3349 !important;
+  }
+
+  // Select dropdown styling
+  .mat-mdc-select-value {
+    color: rgba(0, 0, 0, 0.87);
+  }
+
+  .mat-mdc-option {
+    &:hover {
+      background-color: rgba(235, 51, 73, 0.1);
+    }
+
+    &.mat-mdc-option-active {
+      background-color: rgba(235, 51, 73, 0.15);
+    }
+  }
+}
+
 .button-row {
   display: flex;
   justify-content: flex-end;
-  gap: 12px;
-  margin-top: 20px;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
 
   button {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 8px;
-    min-width: 120px;
+    min-width: 140px;
+    height: 48px;
+    border-radius: 8px;
+    font-weight: 500;
+    text-transform: none;
+    transition: all 0.3s ease;
 
     mat-spinner {
       display: inline-block;
       margin-right: 8px;
     }
+
+    mat-icon {
+      color: inherit !important;
+    }
+
+    &:not([disabled]):hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    &[disabled] {
+      opacity: 0.6;
+    }
+
+    // Cancel button
+    &:first-child {
+      background-color: white;
+      border: 2px solid #e0e0e0;
+      color: #666;
+
+      &:hover:not([disabled]) {
+        border-color: #eb3349;
+        color: #eb3349;
+      }
+    }
+
+    // Submit button (warn color)
+    &[color="warn"] {
+      background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
+      box-shadow: 0 4px 12px rgba(235, 51, 73, 0.3);
+
+      &:hover:not([disabled]) {
+        box-shadow: 0 6px 20px rgba(235, 51, 73, 0.4);
+      }
+    }
   }
 }
 
+// Input fields enhancement
+::ng-deep {
+  .mat-mdc-form-field {
+    .mat-mdc-form-field-hint,
+    .mat-mdc-form-field-error {
+      font-size: 12px;
+    }
+
+    .mat-mdc-form-field-error {
+      color: #f44336;
+    }
+
+    // Amount field special styling
+    &:has(input[type="number"]) {
+      .mat-mdc-text-field-wrapper {
+        background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+      }
+    }
+  }
+
+  // Date picker icon
+  .mat-datepicker-toggle {
+    .mat-icon-button {
+      color: #eb3349;
+    }
+  }
+}
+
+// Responsive
 @media (max-width: 768px) {
   .page-container {
-    padding: 12px;
+    padding: 1rem;
+    align-items: flex-start;
+  }
+
+  .form-card {
+    margin-top: 1rem;
+
+    mat-card-header {
+      padding: 1.5rem;
+
+      mat-card-title {
+        font-size: 22px;
+
+        mat-icon {
+          font-size: 26px;
+          width: 26px;
+          height: 26px;
+        }
+      }
+
+      mat-card-subtitle {
+        margin-left: 38px;
+        font-size: 13px;
+      }
+    }
+
+    mat-card-content {
+      padding: 1rem;
+    }
   }
 
   .button-row {
-    flex-direction: column;
+    flex-direction: column-reverse;
+    gap: 0.75rem;
 
     button {
       width: 100%;
+      min-width: unset;
     }
   }
+}
+
+// Animation
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.form-card {
+  animation: fadeInUp 0.4s ease-out;
 }
