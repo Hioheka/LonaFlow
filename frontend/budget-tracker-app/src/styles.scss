@@ -71,9 +71,13 @@ html, body {
 /* Material Dialog Customization */
 .mat-mdc-dialog-container {
   border-radius: 16px !important;
+  height: auto !important;
+  min-height: auto !important;
 
   .mdc-dialog__surface {
     border-radius: 16px !important;
+    overflow-y: auto !important;
+    max-height: 90vh !important;
   }
 }
 
@@ -94,29 +98,16 @@ html, body {
   }
 }
 
-/* Remove default slide animation and center dialog */
-.cdk-overlay-pane {
-  animation: none !important;
-}
-
 /* Ensure dialog is perfectly centered */
 .cdk-global-overlay-wrapper {
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  position: fixed !important;
-  top: 0 !important;
-  left: 0 !important;
-  right: 0 !important;
-  bottom: 0 !important;
-  pointer-events: none !important;
 }
 
+/* Remove default positioning */
 .cdk-overlay-pane {
-  pointer-events: auto !important;
-  position: relative !important;
-  max-width: 90vw !important;
-  max-height: 90vh !important;
+  position: static !important;
 }
 
 /* Utility Classes */
