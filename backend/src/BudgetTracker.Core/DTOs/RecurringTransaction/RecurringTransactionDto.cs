@@ -10,6 +10,7 @@ public class RecurringTransactionDto
     public string Description { get; set; } = string.Empty;
     public string? Notes { get; set; }
     public RecurrenceFrequency Frequency { get; set; }
+    public int? DayOfMonth { get; set; }
     public DateTime StartDate { get; set; }
     public DateTime? EndDate { get; set; }
     public DateTime? NextDueDate { get; set; }

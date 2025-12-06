@@ -20,6 +20,9 @@ public class CreateRecurringTransactionDto
     [Required]
     public RecurrenceFrequency Frequency { get; set; }
 
+    [Range(1, 31)]
+    public int? DayOfMonth { get; set; }
+
     [Required]
     public DateTime StartDate { get; set; }
 

@@ -13,6 +13,7 @@ public class RecurringTransaction
 
     // Recurrence Settings
     public RecurrenceFrequency Frequency { get; set; }
+    public int? DayOfMonth { get; set; } // Ayın kaçında ödeme yapılacak (1-31, null = StartDate'in günü kullanılır)
     public DateTime StartDate { get; set; }
     public DateTime? EndDate { get; set; } // Null = sonsuz
     public DateTime? LastProcessedDate { get; set; }
