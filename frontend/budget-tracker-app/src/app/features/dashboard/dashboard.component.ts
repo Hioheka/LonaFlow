@@ -16,6 +16,8 @@ import { AddCategoryComponent } from '../products/categories/add-category.compon
 import { AddCreditorComponent } from '../products/creditors/add-creditor.component';
 import { AddIncomeComponent } from '../transactions/add-income/add-income.component';
 import { AddExpenseComponent } from '../transactions/add-expense/add-expense.component';
+import { IncomeListDialogComponent } from '../transactions/income-list/income-list-dialog.component';
+import { ExpenseListDialogComponent } from '../transactions/expense-list/expense-list-dialog.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -150,6 +152,34 @@ export class DashboardComponent implements OnInit {
       if (result) {
         this.loadDashboard();
         this.loadUpcomingPayments();
+      }
+    });
+  }
+
+  openIncomeListDialog(): void {
+    const dialogRef = this.dialog.open(IncomeListDialogComponent, {
+      width: '800px',
+      maxWidth: '90vw',
+      disableClose: false
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.loadDashboard();
+      }
+    });
+  }
+
+  openExpenseListDialog(): void {
+    const dialogRef = this.dialog.open(ExpenseListDialogComponent, {
+      width: '800px',
+      maxWidth: '90vw',
+      disableClose: false
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.loadDashboard();
       }
     });
   }

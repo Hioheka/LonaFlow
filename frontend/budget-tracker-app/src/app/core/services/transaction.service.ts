@@ -30,4 +30,8 @@ export class TransactionService {
   getCreditors(): Observable<Creditor[]> {
     return this.http.get<Creditor[]>(`${this.API_URL}/creditors`);
   }
+
+  deleteTransaction(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.API_URL}/transactions/${id}`);
+  }
 }

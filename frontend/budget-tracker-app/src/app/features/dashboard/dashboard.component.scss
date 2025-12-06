@@ -211,6 +211,10 @@ mat-toolbar {
     box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
   }
 
+  &.clickable {
+    cursor: pointer;
+  }
+
   mat-card-content {
     display: flex;
     align-items: center;

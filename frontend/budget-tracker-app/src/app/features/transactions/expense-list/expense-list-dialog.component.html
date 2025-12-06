@@ -1,0 +1,83 @@
+<div class="expense-list-dialog">
+  <div class="dialog-header">
+    <h2 mat-dialog-title>
+      <mat-icon>trending_down</mat-icon>
+      Gider Listesi
+    </h2>
+    <button mat-icon-button (click)="close()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <mat-dialog-content>
+    <div *ngIf="isLoading" class="loading-container">
+      <mat-spinner diameter="40"></mat-spinner>
+      <p>Giderler yükleniyor...</p>
+    </div>
+
+    <div *ngIf="!isLoading && expenses.length === 0" class="empty-state">
+      <mat-icon>inbox</mat-icon>
+      <p>Henüz gider kaydı bulunmuyor</p>
+    </div>
+
+    <div *ngIf="!isLoading && expenses.length > 0" class="table-container">
+      <table mat-table [dataSource]="expenses" class="expense-table">
+        <!-- Date Column -->
+        <ng-container matColumnDef="date">
+          <th mat-header-cell *matHeaderCellDef>Tarih</th>
+          <td mat-cell *matCellDef="let expense">{{ expense.transactionDate | date:'dd.MM.yyyy' }}</td>
+        </ng-container>
+
+        <!-- Description Column -->
+        <ng-container matColumnDef="description">
+          <th mat-header-cell *matHeaderCellDef>Açıklama</th>
+          <td mat-cell *matCellDef="let expense">
+            <div class="description-cell">
+              <span class="description">{{ expense.description }}</span>
+              <span class="notes" *ngIf="expense.notes">{{ expense.notes }}</span>
+            </div>
+          </td>
+        </ng-container>
+
+        <!-- Category Column -->
+        <ng-container matColumnDef="category">
+          <th mat-header-cell *matHeaderCellDef>Kategori</th>
+          <td mat-cell *matCellDef="let expense">
+            <span class="category-badge" *ngIf="expense.categoryName">{{ expense.categoryName }}</span>
+            <span class="no-category" *ngIf="!expense.categoryName">-</span>
+          </td>
+        </ng-container>
+
+        <!-- Amount Column -->
+        <ng-container matColumnDef="amount">
+          <th mat-header-cell *matHeaderCellDef>Tutar</th>
+          <td mat-cell *matCellDef="let expense">
+            <span class="amount expense-amount">{{ expense.amount | currency:'TRY':'symbol':'1.2-2' }}</span>
+          </td>
+        </ng-container>
+
+        <!-- Actions Column -->
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>İşlemler</th>
+          <td mat-cell *matCellDef="let expense">
+            <button mat-icon-button color="warn" (click)="deleteExpense(expense)" matTooltip="Sil">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+    </div>
+
+    <div *ngIf="!isLoading && expenses.length > 0" class="total-summary">
+      <span class="total-label">Toplam:</span>
+      <span class="total-amount">{{ expenses.reduce((sum, expense) => sum + expense.amount, 0) | currency:'TRY':'symbol':'1.2-2' }}</span>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="close()">Kapat</button>
+  </mat-dialog-actions>
+</div>
