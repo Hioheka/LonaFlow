@@ -73,7 +73,7 @@
 
     <div *ngIf="!isLoading && incomes.length > 0" class="total-summary">
       <span class="total-label">Toplam:</span>
-      <span class="total-amount">{{ incomes.reduce((sum, income) => sum + income.amount, 0) | currency:'TRY':'symbol':'1.2-2' }}</span>
+      <span class="total-amount">{{ getTotalIncome() | currency:'TRY':'symbol':'1.2-2' }}</span>
     </div>
   </mat-dialog-content>
 

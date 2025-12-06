@@ -96,4 +96,8 @@ export class IncomeListDialogComponent implements OnInit {
   close(): void {
     this.dialogRef.close();
   }
+
+  getTotalIncome(): number {
+    return this.incomes.reduce((sum, income) => sum + income.amount, 0);
+  }
 }

@@ -96,4 +96,8 @@ export class ExpenseListDialogComponent implements OnInit {
   close(): void {
     this.dialogRef.close();
   }
+
+  getTotalExpense(): number {
+    return this.expenses.reduce((sum, expense) => sum + expense.amount, 0);
+  }
 }
