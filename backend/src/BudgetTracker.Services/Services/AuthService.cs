@@ -14,11 +14,16 @@ public class AuthService : IAuthService
 {
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly IConfiguration _configuration;
+    private readonly UserDataSeeder _userDataSeeder;
 
-    public AuthService(UserManager<ApplicationUser> userManager, IConfiguration configuration)
+    public AuthService(
+        UserManager<ApplicationUser> userManager,
+        IConfiguration configuration,
+        UserDataSeeder userDataSeeder)
     {
         _userManager = userManager;
         _configuration = configuration;
+        _userDataSeeder = userDataSeeder;
     }
 
     public async Task<AuthResponseDto> RegisterAsync(RegisterDto registerDto)
@@ -44,6 +49,9 @@ public class AuthService : IAuthService
         {
             throw new Exception(string.Join(", ", result.Errors.Select(e => e.Description)));
         }
+
+        // Yeni kullanıcı için temel verileri ekle (kategoriler, ödeme yöntemleri, alacaklılar)
+        await _userDataSeeder.SeedUserDataAsync(user.Id);
 
         return await GenerateAuthResponse(user);
     }
