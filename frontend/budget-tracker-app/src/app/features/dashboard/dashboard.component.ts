@@ -69,7 +69,9 @@ export class DashboardComponent implements OnInit {
   openPaymentMethodDialog(): void {
     const dialogRef = this.dialog.open(AddPaymentMethodComponent, {
       width: '600px',
-      disableClose: false
+      disableClose: false,
+      enterAnimationDuration: '200ms',
+      exitAnimationDuration: '150ms'
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -82,7 +84,9 @@ export class DashboardComponent implements OnInit {
   openCategoryDialog(): void {
     const dialogRef = this.dialog.open(AddCategoryComponent, {
       width: '600px',
-      disableClose: false
+      disableClose: false,
+      enterAnimationDuration: '200ms',
+      exitAnimationDuration: '150ms'
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -95,7 +99,9 @@ export class DashboardComponent implements OnInit {
   openCreditorDialog(): void {
     const dialogRef = this.dialog.open(AddCreditorComponent, {
       width: '600px',
-      disableClose: false
+      disableClose: false,
+      enterAnimationDuration: '200ms',
+      exitAnimationDuration: '150ms'
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -108,7 +114,9 @@ export class DashboardComponent implements OnInit {
   openIncomeDialog(): void {
     const dialogRef = this.dialog.open(AddIncomeComponent, {
       width: '700px',
-      disableClose: false
+      disableClose: false,
+      enterAnimationDuration: '200ms',
+      exitAnimationDuration: '150ms'
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -121,7 +129,9 @@ export class DashboardComponent implements OnInit {
   openExpenseDialog(): void {
     const dialogRef = this.dialog.open(AddExpenseComponent, {
       width: '700px',
-      disableClose: false
+      disableClose: false,
+      enterAnimationDuration: '200ms',
+      exitAnimationDuration: '150ms'
     });
 
     dialogRef.afterClosed().subscribe(result => {
