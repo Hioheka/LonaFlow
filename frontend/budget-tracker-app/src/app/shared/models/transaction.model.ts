@@ -11,9 +11,11 @@ export enum PaymentMethodType {
 }
 
 export enum RecurrenceFrequency {
+  OneTime = 0,
   Daily = 1,
   Weekly = 2,
-  Monthly = 3
+  Monthly = 3,
+  Yearly = 4
 }
 
 export interface Transaction {
@@ -78,6 +80,7 @@ export interface RecurringTransaction {
   description: string;
   notes?: string;
   frequency: RecurrenceFrequency;
+  dayOfMonth?: number;
   startDate: Date;
   endDate?: Date;
   nextDueDate?: Date;
@@ -89,6 +92,32 @@ export interface RecurringTransaction {
   creditorName?: string;
   isActive: boolean;
   createdAt: Date;
+}
+
+export interface CreateRecurringTransactionRequest {
+  type: TransactionType;
+  amount: number;
+  description: string;
+  notes?: string;
+  frequency: RecurrenceFrequency;
+  dayOfMonth?: number;
+  startDate: Date;
+  endDate?: Date;
+  categoryId?: number;
+  paymentMethodId?: number;
+  creditorId?: number;
+}
+
+export interface UpcomingPayment {
+  recurringTransactionId: number;
+  description: string;
+  amount: number;
+  dueDate: Date;
+  type: TransactionType;
+  categoryName?: string;
+  paymentMethodName?: string;
+  creditorName?: string;
+  isProcessed: boolean;
 }
 
 export interface DashboardSummary {

@@ -12,8 +12,10 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { TransactionService } from '../../../core/services/transaction.service';
-import { TransactionType, Category, PaymentMethod, Creditor } from '../../../shared/models/transaction.model';
+import { RecurringTransactionService } from '../../../core/services/recurring-transaction.service';
+import { TransactionType, Category, PaymentMethod, Creditor, RecurrenceFrequency } from '../../../shared/models/transaction.model';
 
 @Component({
   selector: 'app-add-expense',
@@ -31,7 +33,8 @@ import { TransactionType, Category, PaymentMethod, Creditor } from '../../../sha
     MatProgressSpinnerModule,
     MatSnackBarModule,
     MatDatepickerModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    MatCheckboxModule
   ],
   templateUrl: './add-expense.component.html',
   styleUrls: ['./add-expense.component.scss']
@@ -46,6 +49,7 @@ export class AddExpenseComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private transactionService: TransactionService,
+    private recurringService: RecurringTransactionService,
     private dialogRef: MatDialogRef<AddExpenseComponent>,
     private snackBar: MatSnackBar
   ) {
@@ -56,7 +60,11 @@ export class AddExpenseComponent implements OnInit {
       notes: [''],
       categoryId: [''],
       paymentMethodId: [''],
-      creditorId: ['']
+      creditorId: [''],
+      isRecurring: [false],
+      frequency: [RecurrenceFrequency.Monthly],
+      dayOfMonth: [''],
+      endDate: ['']
     });
   }
 
@@ -110,40 +118,83 @@ export class AddExpenseComponent implements OnInit {
     this.isLoading = true;
 
     const formValue = this.expenseForm.value;
-    const request = {
-      type: TransactionType.Expense,
-      amount: Number(formValue.amount),
-      transactionDate: formValue.transactionDate,
-      description: formValue.description,
-      notes: formValue.notes || undefined,
-      categoryId: formValue.categoryId ? Number(formValue.categoryId) : undefined,
-      paymentMethodId: formValue.paymentMethodId ? Number(formValue.paymentMethodId) : undefined,
-      creditorId: formValue.creditorId ? Number(formValue.creditorId) : undefined
-    };
 
-    this.transactionService.createTransaction(request).subscribe({
-      next: () => {
-        this.snackBar.open('Gider başarıyla eklendi!', 'Kapat', {
-          duration: 3000,
-          horizontalPosition: 'end',
-          verticalPosition: 'top'
-        });
-        this.dialogRef.close(true);
-      },
-      error: (error) => {
-        this.isLoading = false;
-        this.snackBar.open(
-          error.error?.message || 'Gider eklenirken bir hata oluştu.',
-          'Kapat',
-          {
-            duration: 5000,
+    // Tekrarlayan ödeme ise
+    if (formValue.isRecurring) {
+      const recurringRequest = {
+        type: TransactionType.Expense,
+        amount: Number(formValue.amount),
+        description: formValue.description,
+        notes: formValue.notes || undefined,
+        frequency: Number(formValue.frequency),
+        dayOfMonth: formValue.dayOfMonth ? Number(formValue.dayOfMonth) : undefined,
+        startDate: formValue.transactionDate,
+        endDate: formValue.endDate || undefined,
+        categoryId: formValue.categoryId ? Number(formValue.categoryId) : undefined,
+        paymentMethodId: formValue.paymentMethodId ? Number(formValue.paymentMethodId) : undefined,
+        creditorId: formValue.creditorId ? Number(formValue.creditorId) : undefined
+      };
+
+      this.recurringService.create(recurringRequest).subscribe({
+        next: () => {
+          this.snackBar.open('Tekrarlayan gider başarıyla eklendi!', 'Kapat', {
+            duration: 3000,
             horizontalPosition: 'end',
             verticalPosition: 'top'
-          }
-        );
-        console.error('Gider ekleme hatası:', error);
-      }
-    });
+          });
+          this.dialogRef.close(true);
+        },
+        error: (error) => {
+          this.isLoading = false;
+          this.snackBar.open(
+            error.error?.message || 'Tekrarlayan gider eklenirken bir hata oluştu.',
+            'Kapat',
+            {
+              duration: 5000,
+              horizontalPosition: 'end',
+              verticalPosition: 'top'
+            }
+          );
+          console.error('Tekrarlayan gider ekleme hatası:', error);
+        }
+      });
+    } else {
+      // Normal tek seferlik gider
+      const request = {
+        type: TransactionType.Expense,
+        amount: Number(formValue.amount),
+        transactionDate: formValue.transactionDate,
+        description: formValue.description,
+        notes: formValue.notes || undefined,
+        categoryId: formValue.categoryId ? Number(formValue.categoryId) : undefined,
+        paymentMethodId: formValue.paymentMethodId ? Number(formValue.paymentMethodId) : undefined,
+        creditorId: formValue.creditorId ? Number(formValue.creditorId) : undefined
+      };
+
+      this.transactionService.createTransaction(request).subscribe({
+        next: () => {
+          this.snackBar.open('Gider başarıyla eklendi!', 'Kapat', {
+            duration: 3000,
+            horizontalPosition: 'end',
+            verticalPosition: 'top'
+          });
+          this.dialogRef.close(true);
+        },
+        error: (error) => {
+          this.isLoading = false;
+          this.snackBar.open(
+            error.error?.message || 'Gider eklenirken bir hata oluştu.',
+            'Kapat',
+            {
+              duration: 5000,
+              horizontalPosition: 'end',
+              verticalPosition: 'top'
+            }
+          );
+          console.error('Gider ekleme hatası:', error);
+        }
+      });
+    }
   }
 
   cancel(): void {

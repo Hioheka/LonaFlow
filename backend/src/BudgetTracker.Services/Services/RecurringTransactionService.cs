@@ -9,11 +9,16 @@ namespace BudgetTracker.Services.Services;
 public class RecurringTransactionService : IRecurringTransactionService
 {
     private readonly IRepository<RecurringTransaction> _recurringRepo;
+    private readonly IRepository<RecurringTransactionInstance> _instanceRepo;
     private readonly IUnitOfWork _unitOfWork;
 
-    public RecurringTransactionService(IRepository<RecurringTransaction> recurringRepo, IUnitOfWork unitOfWork)
+    public RecurringTransactionService(
+        IRepository<RecurringTransaction> recurringRepo,
+        IRepository<RecurringTransactionInstance> instanceRepo,
+        IUnitOfWork unitOfWork)
     {
         _recurringRepo = recurringRepo;
+        _instanceRepo = instanceRepo;
         _unitOfWork = unitOfWork;
     }
 
@@ -27,6 +32,7 @@ public class RecurringTransactionService : IRecurringTransactionService
             Description = dto.Description,
             Notes = dto.Notes,
             Frequency = dto.Frequency,
+            DayOfMonth = dto.DayOfMonth,
             StartDate = dto.StartDate,
             EndDate = dto.EndDate,
             NextDueDate = dto.StartDate,
@@ -54,6 +60,7 @@ public class RecurringTransactionService : IRecurringTransactionService
         recurring.Description = dto.Description;
         recurring.Notes = dto.Notes;
         recurring.Frequency = dto.Frequency;
+        recurring.DayOfMonth = dto.DayOfMonth;
         recurring.StartDate = dto.StartDate;
         recurring.EndDate = dto.EndDate;
         recurring.CategoryId = dto.CategoryId;
@@ -100,6 +107,83 @@ public class RecurringTransactionService : IRecurringTransactionService
         return recurring.Select(MapToDto);
     }
 
+    public async Task<IEnumerable<UpcomingPaymentDto>> GetUpcomingPaymentsAsync(string userId, int months = 6)
+    {
+        var activeRecurring = await _recurringRepo.FindAsync(r => r.UserId == userId && r.IsActive);
+        var upcomingPayments = new List<UpcomingPaymentDto>();
+        var now = DateTime.UtcNow;
+        var endDate = now.AddMonths(months);
+
+        foreach (var recurring in activeRecurring)
+        {
+            var payments = GenerateUpcomingPayments(recurring, now, endDate);
+            upcomingPayments.AddRange(payments);
+        }
+
+        return upcomingPayments.OrderBy(p => p.DueDate).ToList();
+    }
+
+    private List<UpcomingPaymentDto> GenerateUpcomingPayments(RecurringTransaction recurring, DateTime startDate, DateTime endDate)
+    {
+        var payments = new List<UpcomingPaymentDto>();
+        var currentDate = recurring.NextDueDate ?? recurring.StartDate;
+
+        // Eğer NextDueDate geçmişte ise, şu anki tarihe göre ayarla
+        if (currentDate < startDate)
+        {
+            currentDate = CalculateNextDueDate(recurring, startDate);
+        }
+
+        while (currentDate <= endDate)
+        {
+            // EndDate kontrolü
+            if (recurring.EndDate.HasValue && currentDate > recurring.EndDate.Value)
+                break;
+
+            payments.Add(new UpcomingPaymentDto
+            {
+                RecurringTransactionId = recurring.Id,
+                Description = recurring.Description,
+                Amount = recurring.Amount,
+                DueDate = currentDate,
+                Type = recurring.Type,
+                CategoryName = recurring.Category?.Name,
+                PaymentMethodName = recurring.PaymentMethod?.Name,
+                CreditorName = recurring.Creditor?.Name,
+                IsProcessed = false
+            });
+
+            currentDate = CalculateNextDueDate(recurring, currentDate);
+        }
+
+        return payments;
+    }
+
+    private DateTime CalculateNextDueDate(RecurringTransaction recurring, DateTime fromDate)
+    {
+        return recurring.Frequency switch
+        {
+            RecurrenceFrequency.Daily => fromDate.AddDays(1),
+            RecurrenceFrequency.Weekly => fromDate.AddDays(7),
+            RecurrenceFrequency.Monthly => CalculateNextMonthlyDate(fromDate, recurring.DayOfMonth),
+            RecurrenceFrequency.Yearly => fromDate.AddYears(1),
+            RecurrenceFrequency.OneTime => fromDate.AddYears(100), // OneTime için çok ileride bir tarih
+            _ => fromDate.AddMonths(1)
+        };
+    }
+
+    private DateTime CalculateNextMonthlyDate(DateTime fromDate, int? dayOfMonth)
+    {
+        var targetDay = dayOfMonth ?? fromDate.Day;
+        var nextMonth = fromDate.AddMonths(1);
+        var daysInNextMonth = DateTime.DaysInMonth(nextMonth.Year, nextMonth.Month);
+
+        // Eğer hedef gün o ayda yoksa (örn: 31 Şubat), ayın son günü kullan
+        var actualDay = Math.Min(targetDay, daysInNextMonth);
+
+        return new DateTime(nextMonth.Year, nextMonth.Month, actualDay, fromDate.Hour, fromDate.Minute, fromDate.Second);
+    }
+
     private static RecurringTransactionDto MapToDto(RecurringTransaction recurring)
     {
         return new RecurringTransactionDto
@@ -110,6 +194,7 @@ public class RecurringTransactionService : IRecurringTransactionService
             Description = recurring.Description,
             Notes = recurring.Notes,
             Frequency = recurring.Frequency,
+            DayOfMonth = recurring.DayOfMonth,
             StartDate = recurring.StartDate,
             EndDate = recurring.EndDate,
             NextDueDate = recurring.NextDueDate,

@@ -34,6 +34,13 @@ public class RecurringTransactionsController : ControllerBase
         return Ok(recurring);
     }
 
+    [HttpGet("upcoming")]
+    public async Task<IActionResult> GetUpcomingPayments([FromQuery] int months = 6)
+    {
+        var upcomingPayments = await _recurringService.GetUpcomingPaymentsAsync(GetUserId(), months);
+        return Ok(upcomingPayments);
+    }
+
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(int id)
     {

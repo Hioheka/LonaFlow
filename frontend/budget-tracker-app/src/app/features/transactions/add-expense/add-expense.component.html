@@ -100,6 +100,51 @@
           <mat-icon matPrefix>note</mat-icon>
         </mat-form-field>
 
+        <div class="recurring-section">
+          <mat-checkbox formControlName="isRecurring" class="recurring-checkbox">
+            Tekrarlayan Ödeme
+          </mat-checkbox>
+
+          <div *ngIf="expenseForm.get('isRecurring')?.value" class="recurring-fields">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Periyot</mat-label>
+              <mat-select formControlName="frequency">
+                <mat-option [value]="0">Tek Seferlik</mat-option>
+                <mat-option [value]="1">Günlük</mat-option>
+                <mat-option [value]="2">Haftalık</mat-option>
+                <mat-option [value]="3">Aylık</mat-option>
+                <mat-option [value]="4">Yıllık</mat-option>
+              </mat-select>
+              <mat-icon matPrefix>loop</mat-icon>
+              <mat-hint>Ödeme periyodu</mat-hint>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="full-width" *ngIf="expenseForm.get('frequency')?.value === 3">
+              <mat-label>Ayın Kaçında Ödeme</mat-label>
+              <input
+                matInput
+                type="number"
+                formControlName="dayOfMonth"
+                placeholder="15"
+                min="1"
+                max="31">
+              <mat-icon matPrefix>calendar_today</mat-icon>
+              <mat-hint>Örn: 15 (ayın 15'inde)</mat-hint>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Bitiş Tarihi (İsteğe Bağlı)</mat-label>
+              <input
+                matInput
+                [matDatepicker]="endPicker"
+                formControlName="endDate">
+              <mat-datepicker-toggle matIconPrefix [for]="endPicker"></mat-datepicker-toggle>
+              <mat-datepicker #endPicker></mat-datepicker>
+              <mat-hint>Son ödeme tarihi</mat-hint>
+            </mat-form-field>
+          </div>
+        </div>
+
         <div class="button-row">
           <button
             mat-raised-button

@@ -39,6 +39,61 @@
     </div>
   </section>
 
+  <!-- Upcoming Payments Section -->
+  <section class="upcoming-payments-section">
+    <div class="section-header">
+      <h2>
+        <mat-icon>event</mat-icon>
+        Yaklaşan Ödemeler
+      </h2>
+      <span class="payment-count" *ngIf="upcomingPayments.length > 0">
+        {{ upcomingPayments.length }} ödeme
+      </span>
+    </div>
+
+    <div *ngIf="isLoadingPayments" class="loading-container">
+      <mat-spinner diameter="40"></mat-spinner>
+      <p>Ödemeler yükleniyor...</p>
+    </div>
+
+    <div class="payments-grid" *ngIf="!isLoadingPayments && upcomingPayments.length > 0">
+      <mat-card class="payment-card" *ngFor="let payment of upcomingPayments">
+        <mat-card-content>
+          <div class="payment-header">
+            <div class="payment-icon" [class.expense]="payment.type === 2" [class.income]="payment.type === 1">
+              <mat-icon>{{ payment.type === 2 ? 'arrow_downward' : 'arrow_upward' }}</mat-icon>
+            </div>
+            <div class="payment-info">
+              <h3 class="payment-description">{{ payment.description }}</h3>
+              <p class="payment-meta">
+                <span *ngIf="payment.categoryName">{{ payment.categoryName }}</span>
+                <span *ngIf="payment.creditorName"> • {{ payment.creditorName }}</span>
+              </p>
+            </div>
+          </div>
+          <div class="payment-details">
+            <div class="payment-amount" [class.expense]="payment.type === 2" [class.income]="payment.type === 1">
+              {{ payment.amount | currency:'TRY':'symbol':'1.2-2' }}
+            </div>
+            <div class="payment-date">
+              <mat-icon>calendar_today</mat-icon>
+              {{ payment.dueDate | date:'dd MMMM yyyy' }}
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <div class="empty-state" *ngIf="!isLoadingPayments && upcomingPayments.length === 0">
+      <mat-icon>event_available</mat-icon>
+      <p>Yaklaşan ödeme bulunmuyor</p>
+      <button mat-raised-button color="accent" (click)="openExpenseDialog()">
+        <mat-icon>add</mat-icon>
+        Tekrarlayan Gider Ekle
+      </button>
+    </div>
+  </section>
+
   <!-- Genel Bakış Section -->
   <section class="overview-section">
     <h2>Genel Bakış</h2>

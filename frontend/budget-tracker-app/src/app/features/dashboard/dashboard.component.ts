@@ -8,7 +8,9 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { AuthService } from '../../core/services/auth.service';
 import { DashboardService } from '../../core/services/dashboard.service';
+import { RecurringTransactionService } from '../../core/services/recurring-transaction.service';
 import { DashboardSummary } from '../../shared/models/dashboard.model';
+import { UpcomingPayment } from '../../shared/models/transaction.model';
 import { AddPaymentMethodComponent } from '../products/payment-methods/add-payment-method.component';
 import { AddCategoryComponent } from '../products/categories/add-category.component';
 import { AddCreditorComponent } from '../products/creditors/add-creditor.component';
@@ -32,17 +34,21 @@ import { AddExpenseComponent } from '../transactions/add-expense/add-expense.com
 })
 export class DashboardComponent implements OnInit {
   dashboardData: DashboardSummary | null = null;
+  upcomingPayments: UpcomingPayment[] = [];
   error: string | null = null;
   isLoading = false;
+  isLoadingPayments = false;
 
   constructor(
     private authService: AuthService,
     private dashboardService: DashboardService,
+    private recurringService: RecurringTransactionService,
     private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
     this.loadDashboard();
+    this.loadUpcomingPayments();
   }
 
   loadDashboard(): void {
@@ -62,6 +68,22 @@ export class DashboardComponent implements OnInit {
         console.error('Dashboard yüklenirken hata:', err);
         this.error = 'Dashboard verileri yüklenirken bir hata oluştu. Lütfen backend API\'nin çalıştığından emin olun.';
         this.isLoading = false;
+      }
+    });
+  }
+
+  loadUpcomingPayments(): void {
+    this.isLoadingPayments = true;
+
+    this.recurringService.getUpcomingPayments(6).subscribe({
+      next: (payments) => {
+        this.upcomingPayments = payments;
+        this.isLoadingPayments = false;
+      },
+      error: (err) => {
+        console.error('Yaklaşan ödemeler yüklenirken hata:', err);
+        this.upcomingPayments = [];
+        this.isLoadingPayments = false;
       }
     });
   }
@@ -127,6 +149,7 @@ export class DashboardComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.loadDashboard();
+        this.loadUpcomingPayments();
       }
     });
   }

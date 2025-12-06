@@ -449,6 +449,204 @@ mat-toolbar {
   }
 }
 
+// Upcoming Payments Section
+.upcoming-payments-section {
+  margin-bottom: 2rem;
+  padding: 2rem;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  animation: fadeInUp 0.6s ease-out 0.2s backwards;
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+
+    h2 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #333;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin: 0;
+
+      mat-icon {
+        color: #667eea;
+        font-size: 28px;
+        width: 28px;
+        height: 28px;
+      }
+    }
+
+    .payment-count {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+  }
+
+  .payments-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+  }
+
+  .payment-card {
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    overflow: hidden;
+
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    }
+
+    mat-card-content {
+      padding: 1.25rem !important;
+    }
+
+    .payment-header {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+
+      .payment-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        &.expense {
+          background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+        }
+
+        &.income {
+          background: linear-gradient(135deg, #51cf66 0%, #37b24d 100%);
+        }
+
+        mat-icon {
+          color: white;
+          font-size: 24px;
+          width: 24px;
+          height: 24px;
+        }
+      }
+
+      .payment-info {
+        flex: 1;
+        min-width: 0;
+
+        .payment-description {
+          font-size: 16px;
+          font-weight: 600;
+          color: #333;
+          margin: 0 0 0.25rem 0;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        .payment-meta {
+          font-size: 13px;
+          color: #999;
+          margin: 0;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+      }
+    }
+
+    .payment-details {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 1rem;
+      border-top: 1px solid #eee;
+
+      .payment-amount {
+        font-size: 20px;
+        font-weight: 700;
+
+        &.expense {
+          color: #f44336;
+        }
+
+        &.income {
+          color: #4caf50;
+        }
+      }
+
+      .payment-date {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        font-size: 13px;
+        color: #666;
+        font-weight: 500;
+
+        mat-icon {
+          font-size: 16px;
+          width: 16px;
+          height: 16px;
+          color: #999;
+        }
+      }
+    }
+  }
+
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 2rem;
+    text-align: center;
+
+    mat-icon {
+      font-size: 64px;
+      width: 64px;
+      height: 64px;
+      color: #e0e0e0;
+      margin-bottom: 1rem;
+    }
+
+    p {
+      color: #999;
+      font-size: 16px;
+      margin-bottom: 1.5rem;
+    }
+
+    button {
+      border-radius: 8px;
+      font-weight: 500;
+      gap: 0.5rem;
+    }
+  }
+
+  @media (max-width: 768px) {
+    padding: 1.5rem;
+
+    .section-header h2 {
+      font-size: 1.25rem;
+    }
+
+    .payments-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+}
+
 // Loading Container
 .loading-container {
   display: flex;
