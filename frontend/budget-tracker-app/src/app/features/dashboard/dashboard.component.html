@@ -16,23 +16,23 @@
   <section class="quick-actions">
     <h2>Hızlı İşlemler</h2>
     <div class="action-buttons">
-      <button mat-raised-button color="primary" [routerLink]="['/products/payment-methods/add']">
+      <button mat-raised-button color="primary" (click)="openPaymentMethodDialog()">
         <mat-icon>credit_card</mat-icon>
         Ödeme Yöntemi Ekle
       </button>
-      <button mat-raised-button color="accent" [routerLink]="['/products/categories/add']">
+      <button mat-raised-button color="accent" (click)="openCategoryDialog()">
         <mat-icon>category</mat-icon>
         Kategori Ekle
       </button>
-      <button mat-raised-button color="warn" [routerLink]="['/products/creditors/add']">
+      <button mat-raised-button color="warn" (click)="openCreditorDialog()">
         <mat-icon>business</mat-icon>
         Alacaklı/Banka Ekle
       </button>
-      <button mat-raised-button [routerLink]="['/transactions/add-income']">
+      <button mat-raised-button (click)="openIncomeDialog()">
         <mat-icon>add_circle</mat-icon>
         Gelir Ekle
       </button>
-      <button mat-raised-button [routerLink]="['/transactions/add-expense']">
+      <button mat-raised-button (click)="openExpenseDialog()">
         <mat-icon>remove_circle</mat-icon>
         Gider Ekle
       </button>
