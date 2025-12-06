@@ -1,5 +1,5 @@
 .page-container {
-  min-height: 100vh;
+  min-height: 100%;
   background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
   display: flex;
   align-items: center;
@@ -189,7 +189,6 @@ form {
 @media (max-width: 768px) {
   .page-container {
     padding: 1rem;
-    align-items: flex-start;
   }
 
   .form-card {
