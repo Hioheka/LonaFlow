@@ -1,10 +1,9 @@
-.category-container {
-  min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+.category-dialog-container {
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 2rem;
+  min-height: 100%;
 }
 
 .category-card {
@@ -137,7 +136,7 @@
 
 // Responsive
 @media (max-width: 768px) {
-  .category-container {
+  .category-dialog-container {
     padding: 1rem;
   }
 
