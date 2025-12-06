@@ -27,7 +27,8 @@
           </mat-error>
         </mat-form-field>
 
-        <mat-form-field appearance="outline" class="full-width">
+        <!-- Tarih alanı - sadece tek seferlik ödemelerde göster -->
+        <mat-form-field appearance="outline" class="full-width" *ngIf="!expenseForm.get('isRecurring')?.value">
           <mat-label>Tarih</mat-label>
           <input
             matInput
@@ -106,6 +107,21 @@
           </mat-checkbox>
 
           <div *ngIf="expenseForm.get('isRecurring')?.value" class="recurring-fields">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Başlangıç Tarihi</mat-label>
+              <input
+                matInput
+                [matDatepicker]="startPicker"
+                formControlName="transactionDate"
+                required>
+              <mat-datepicker-toggle matIconPrefix [for]="startPicker"></mat-datepicker-toggle>
+              <mat-datepicker #startPicker></mat-datepicker>
+              <mat-error *ngIf="expenseForm.get('transactionDate')?.invalid">
+                {{ getErrorMessage('transactionDate') }}
+              </mat-error>
+              <mat-hint>İlk taksit tarihi</mat-hint>
+            </mat-form-field>
+
             <mat-form-field appearance="outline" class="full-width">
               <mat-label>Periyot</mat-label>
               <mat-select formControlName="frequency">
