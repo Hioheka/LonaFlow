@@ -14,11 +14,10 @@
           <mat-label>Tutar</mat-label>
           <input
             matInput
-            type="number"
+            type="text"
             formControlName="amount"
-            placeholder="0.00"
-            step="0.01"
-            min="0"
+            appCurrencyFormat
+            placeholder="0"
             required>
           <span matTextPrefix>₺&nbsp;</span>
           <mat-icon matPrefix>attach_money</mat-icon>

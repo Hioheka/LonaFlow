@@ -14,6 +14,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { TransactionService } from '../../../core/services/transaction.service';
 import { TransactionType, Category, PaymentMethod } from '../../../shared/models/transaction.model';
+import { CurrencyFormatDirective } from '../../../shared/directives/currency-format.directive';
 
 @Component({
   selector: 'app-add-income',
@@ -31,7 +32,8 @@ import { TransactionType, Category, PaymentMethod } from '../../../shared/models
     MatProgressSpinnerModule,
     MatSnackBarModule,
     MatDatepickerModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    CurrencyFormatDirective
   ],
   templateUrl: './add-income.component.html',
   styleUrls: ['./add-income.component.scss']

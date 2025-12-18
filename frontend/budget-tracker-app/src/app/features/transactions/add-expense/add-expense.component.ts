@@ -16,6 +16,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { TransactionService } from '../../../core/services/transaction.service';
 import { RecurringTransactionService } from '../../../core/services/recurring-transaction.service';
 import { TransactionType, Category, PaymentMethod, Creditor, RecurrenceFrequency } from '../../../shared/models/transaction.model';
+import { CurrencyFormatDirective } from '../../../shared/directives/currency-format.directive';
 
 @Component({
   selector: 'app-add-expense',
@@ -34,7 +35,8 @@ import { TransactionType, Category, PaymentMethod, Creditor, RecurrenceFrequency
     MatSnackBarModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    CurrencyFormatDirective
   ],
   templateUrl: './add-expense.component.html',
   styleUrls: ['./add-expense.component.scss']
