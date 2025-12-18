@@ -7,7 +7,7 @@ import { CreateTransactionRequest, Transaction, Category, PaymentMethod, Credito
   providedIn: 'root'
 })
 export class TransactionService {
-  private readonly API_URL = 'http://localhost:5000/api';
+  private readonly API_URL = 'http://localhost:5001/api';
 
   constructor(private http: HttpClient) {}
 
