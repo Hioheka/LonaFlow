@@ -1,0 +1,75 @@
+====================================
+MIGRATION OLUŞTURMA KOMUTLARI
+====================================
+
+Bu dosya, Entity Framework Core migration oluşturma ve veritabanı güncelleme komutlarını içerir.
+Package Manager Console'da (Visual Studio) veya terminal'de (dotnet CLI) kullanabilirsiniz.
+
+ÖNEMLI: Migration oluşturmadan önce:
+1. Backend projesinin çalıştığından emin olun
+2. appsettings.json'da connection string'in doğru olduğundan emin olun
+3. SQL Server'ın çalıştığından emin olun
+
+------------------------------------
+PACKAGE MANAGER CONSOLE (Visual Studio):
+------------------------------------
+
+# Yeni migration oluşturma:
+Add-Migration InitialCreate -Project BudgetTracker.Data -StartupProject BudgetTracker.API
+
+# Veritabanını güncelleme:
+Update-Database -Project BudgetTracker.Data -StartupProject BudgetTracker.API
+
+# Son migration'ı geri alma:
+Remove-Migration -Project BudgetTracker.Data -StartupProject BudgetTracker.API
+
+# Belirli bir migration'a geri dönme:
+Update-Database -Migration <MigrationName> -Project BudgetTracker.Data -StartupProject BudgetTracker.API
+
+------------------------------------
+DOTNET CLI (Terminal):
+------------------------------------
+
+# Yeni migration oluşturma:
+dotnet ef migrations add InitialCreate --project backend/src/BudgetTracker.Data --startup-project backend/src/BudgetTracker.API
+
+# Veritabanını güncelleme:
+dotnet ef database update --project backend/src/BudgetTracker.Data --startup-project backend/src/BudgetTracker.API
+
+# Son migration'ı geri alma:
+dotnet ef migrations remove --project backend/src/BudgetTracker.Data --startup-project backend/src/BudgetTracker.API
+
+# Tüm migration'ları listeleme:
+dotnet ef migrations list --project backend/src/BudgetTracker.Data --startup-project backend/src/BudgetTracker.API
+
+# SQL script oluşturma:
+dotnet ef migrations script --project backend/src/BudgetTracker.Data --startup-project backend/src/BudgetTracker.API --output backend/migrations.sql
+
+------------------------------------
+KULLANIM SENARYOLARI:
+------------------------------------
+
+Yeni bir özellik eklediğinizde (örneğin yeni bir entity veya property):
+1. Entity modelini oluşturun/güncelleyin
+2. DbContext'e ekleyin (gerekirse)
+3. Migration oluşturun: Add-Migration <ÖzellikAdı>
+4. Veritabanını güncelleyin: Update-Database
+
+Örnek migration isimleri:
+- Add-Migration AddTransactionTable
+- Add-Migration AddCategoryColorField
+- Add-Migration AddRecurringPayments
+- Add-Migration AddUserSeedData
+
+------------------------------------
+SORUN GİDERME:
+------------------------------------
+
+Hata: "Build failed"
+Çözüm: Projeyi derleyin (Build -> Rebuild Solution)
+
+Hata: "Unable to create an object of type 'ApplicationDbContext'"
+Çözüm: connection string'i kontrol edin, SQL Server'ın çalıştığından emin olun
+
+Hata: "The migration '...' has already been applied to the database"
+Çözüm: Zaten uygulanmış, yeni migration oluşturun veya veritabanını sıfırlayın

@@ -1,0 +1,50 @@
+.confirm-dialog {
+  .dialog-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+
+    mat-icon {
+      font-size: 32px;
+      width: 32px;
+      height: 32px;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 20px;
+      font-weight: 500;
+    }
+  }
+
+  mat-dialog-content {
+    p {
+      margin: 8px 0;
+      color: rgba(0, 0, 0, 0.7);
+    }
+
+    .item-name {
+      padding: 12px;
+      background-color: #f5f5f5;
+      border-radius: 4px;
+      margin-top: 12px;
+
+      strong {
+        color: #d32f2f;
+      }
+    }
+  }
+
+  mat-dialog-actions {
+    margin-top: 24px;
+    padding: 16px 0 0 0;
+    gap: 8px;
+
+    button {
+      mat-icon {
+        margin-right: 4px;
+      }
+    }
+  }
+}

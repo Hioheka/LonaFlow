@@ -105,7 +105,7 @@
 
     <!-- KPI Cards -->
     <div class="kpi-cards" *ngIf="dashboardData; else loading">
-      <mat-card class="kpi-card income-card">
+      <mat-card class="kpi-card income-card clickable" (click)="openIncomeListDialog()">
         <mat-card-content>
           <div class="kpi-icon">
             <mat-icon>trending_up</mat-icon>
@@ -117,7 +117,7 @@
         </mat-card-content>
       </mat-card>
 
-      <mat-card class="kpi-card expense-card">
+      <mat-card class="kpi-card expense-card clickable" (click)="openExpenseListDialog()">
         <mat-card-content>
           <div class="kpi-icon">
             <mat-icon>trending_down</mat-icon>
