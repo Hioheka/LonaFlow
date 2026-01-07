@@ -243,6 +243,7 @@ namespace BudgetTracker.Data.Migrations
                     Description = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     Notes = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
                     Frequency = table.Column<int>(type: "int", nullable: false),
+                    DayOfMonth = table.Column<int>(type: "int", nullable: true),
                     StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EndDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     LastProcessedDate = table.Column<DateTime>(type: "datetime2", nullable: true),

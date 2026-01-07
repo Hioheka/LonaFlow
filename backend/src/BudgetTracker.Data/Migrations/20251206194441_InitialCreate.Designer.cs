@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BudgetTracker.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251203212109_InitialCreate")]
+    [Migration("20251206194441_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -20,7 +20,7 @@ namespace BudgetTracker.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "10.0.0")
+                .HasAnnotation("ProductVersion", "8.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -234,6 +234,9 @@ namespace BudgetTracker.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<int?>("CreditorId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("DayOfMonth")
                         .HasColumnType("int");
 
                     b.Property<string>("Description")

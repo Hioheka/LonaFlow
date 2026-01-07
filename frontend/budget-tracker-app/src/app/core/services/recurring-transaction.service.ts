@@ -8,7 +8,7 @@ import { CreateRecurringTransactionRequest, RecurringTransaction, UpcomingPaymen
   providedIn: 'root'
 })
 export class RecurringTransactionService {
-  private apiUrl = `${environment.apiUrl}/recurringtransactions`;
+  private apiUrl = `${environment.apiUrl}/RecurringTransactions`;
 
   constructor(private http: HttpClient) { }
 
