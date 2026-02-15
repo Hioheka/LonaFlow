@@ -10,5 +10,5 @@ public interface IRecurringTransactionService
     Task<RecurringTransactionDto?> GetByIdAsync(string userId, int id);
     Task<IEnumerable<RecurringTransactionDto>> GetAllAsync(string userId);
     Task<IEnumerable<RecurringTransactionDto>> GetActiveAsync(string userId);
-    Task<IEnumerable<UpcomingPaymentDto>> GetUpcomingPaymentsAsync(string userId, int months = 6);
+    Task<IEnumerable<UpcomingPaymentDto>> GetUpcomingPaymentsAsync(string userId, int? months = null, int? days = null);
 }

@@ -47,12 +47,8 @@
           <input
             matInput
             formControlName="description"
-            placeholder="Örn: Market, Fatura, Kira"
-            required>
+            placeholder="Örn: Market, Fatura, Kira">
           <mat-icon matPrefix>description</mat-icon>
-          <mat-error *ngIf="expenseForm.get('description')?.invalid">
-            {{ getErrorMessage('description') }}
-          </mat-error>
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="full-width">

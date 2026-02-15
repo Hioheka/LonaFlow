@@ -85,7 +85,8 @@ export class DashboardComponent implements OnInit {
   loadUpcomingPayments(): void {
     this.isLoadingPayments = true;
 
-    this.recurringService.getUpcomingPayments(6).subscribe({
+    // 30 gün için upcoming payments
+    this.recurringService.getUpcomingPayments(undefined, 30).subscribe({
       next: (payments) => {
         this.upcomingPayments = payments;
         this.isLoadingPayments = false;

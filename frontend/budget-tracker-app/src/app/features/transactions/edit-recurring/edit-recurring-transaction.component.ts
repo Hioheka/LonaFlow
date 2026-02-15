@@ -61,7 +61,7 @@ export class EditRecurringTransactionComponent implements OnInit {
     const transaction = this.data.transaction;
     this.editForm = this.fb.group({
       amount: [transaction.amount, [Validators.required, Validators.min(0.01)]],
-      description: [transaction.description, Validators.required],
+      description: [transaction.description],
       notes: [transaction.notes || ''],
       categoryId: [transaction.categoryId || ''],
       paymentMethodId: [transaction.paymentMethodId || ''],

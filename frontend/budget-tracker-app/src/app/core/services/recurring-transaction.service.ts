@@ -20,8 +20,16 @@ export class RecurringTransactionService {
     return this.http.get<RecurringTransaction[]>(`${this.apiUrl}/active`);
   }
 
-  getUpcomingPayments(months: number = 6): Observable<UpcomingPayment[]> {
-    return this.http.get<UpcomingPayment[]>(`${this.apiUrl}/upcoming?months=${months}`);
+  getUpcomingPayments(months?: number, days?: number): Observable<UpcomingPayment[]> {
+    let params = '';
+    if (months !== undefined) {
+      params = `months=${months}`;
+    }
+    if (days !== undefined) {
+      params = params ? `${params}&days=${days}` : `days=${days}`;
+    }
+    const url = params ? `${this.apiUrl}/upcoming?${params}` : `${this.apiUrl}/upcoming`;
+    return this.http.get<UpcomingPayment[]>(url);
   }
 
   getById(id: number): Observable<RecurringTransaction> {
