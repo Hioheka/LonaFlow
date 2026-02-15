@@ -1,0 +1,84 @@
+<div class="dialog-container">
+  <div class="dialog-header">
+    <h2 mat-dialog-title>
+      <mat-icon>repeat</mat-icon>
+      Tekrarlayan İşlemler
+    </h2>
+    <button mat-icon-button (click)="close()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <mat-dialog-content>
+    <div *ngIf="isLoading" class="loading-container">
+      <mat-spinner diameter="40"></mat-spinner>
+      <p>Yükleniyor...</p>
+    </div>
+
+    <div class="transactions-list" *ngIf="!isLoading && transactions.length > 0">
+      <mat-card class="transaction-card" *ngFor="let transaction of transactions">
+        <mat-card-content>
+          <div class="transaction-header">
+            <div class="transaction-icon" [class.expense]="transaction.type === 2" [class.income]="transaction.type === 1">
+              <mat-icon>{{ transaction.type === 2 ? 'arrow_downward' : 'arrow_upward' }}</mat-icon>
+            </div>
+            <div class="transaction-info">
+              <h3 class="transaction-description">{{ transaction.description }}</h3>
+              <p class="transaction-meta">
+                <span *ngIf="transaction.categoryName">{{ transaction.categoryName }}</span>
+                <span *ngIf="transaction.creditorName"> • {{ transaction.creditorName }}</span>
+                <span *ngIf="transaction.paymentMethodName"> • {{ transaction.paymentMethodName }}</span>
+              </p>
+            </div>
+          </div>
+
+          <div class="transaction-details">
+            <div class="transaction-amount" [class.expense]="transaction.type === 2" [class.income]="transaction.type === 1">
+              {{ transaction.amount | currency:'TRY':'symbol':'1.2-2' }}
+            </div>
+            <mat-chip-set>
+              <mat-chip>{{ getFrequencyLabel(transaction.frequency) }}</mat-chip>
+              <mat-chip *ngIf="transaction.dayOfMonth">Her ay {{ transaction.dayOfMonth }}. gün</mat-chip>
+            </mat-chip-set>
+          </div>
+
+          <div class="transaction-dates">
+            <div class="date-info">
+              <mat-icon>event</mat-icon>
+              <span>Başlangıç: {{ transaction.startDate | date:'dd MMM yyyy' }}</span>
+            </div>
+            <div class="date-info" *ngIf="transaction.endDate">
+              <mat-icon>event_busy</mat-icon>
+              <span>Bitiş: {{ transaction.endDate | date:'dd MMM yyyy' }}</span>
+            </div>
+          </div>
+
+          <div class="transaction-actions">
+            <button mat-raised-button color="primary" (click)="editTransaction(transaction)">
+              <mat-icon>edit</mat-icon>
+              Düzenle
+            </button>
+            <button mat-raised-button color="warn" (click)="deleteTransaction(transaction)">
+              <mat-icon>delete</mat-icon>
+              Sil
+            </button>
+          </div>
+
+          <div class="transaction-notes" *ngIf="transaction.notes">
+            <mat-icon>note</mat-icon>
+            <p>{{ transaction.notes }}</p>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <div class="empty-state" *ngIf="!isLoading && transactions.length === 0">
+      <mat-icon>event_available</mat-icon>
+      <p>Henüz tekrarlayan işlem bulunmuyor</p>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions>
+    <button mat-raised-button (click)="close()">Kapat</button>
+  </mat-dialog-actions>
+</div>

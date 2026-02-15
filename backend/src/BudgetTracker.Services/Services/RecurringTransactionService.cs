@@ -107,12 +107,16 @@ public class RecurringTransactionService : IRecurringTransactionService
         return recurring.Select(MapToDto);
     }
 
-    public async Task<IEnumerable<UpcomingPaymentDto>> GetUpcomingPaymentsAsync(string userId, int months = 6)
+    public async Task<IEnumerable<UpcomingPaymentDto>> GetUpcomingPaymentsAsync(string userId, int? months = null, int? days = null)
     {
         var activeRecurring = await _recurringRepo.FindAsync(r => r.UserId == userId && r.IsActive);
         var upcomingPayments = new List<UpcomingPaymentDto>();
         var now = DateTime.UtcNow;
-        var endDate = now.AddMonths(months);
+
+        // Eğer days parametresi verilmişse onu kullan, yoksa months kullan (default 1 ay = 30 gün)
+        var endDate = days.HasValue
+            ? now.AddDays(days.Value)
+            : now.AddMonths(months ?? 1);
 
         foreach (var recurring in activeRecurring)
         {

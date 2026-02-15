@@ -35,9 +35,9 @@ public class RecurringTransactionsController : ControllerBase
     }
 
     [HttpGet("upcoming")]
-    public async Task<IActionResult> GetUpcomingPayments([FromQuery] int months = 6)
+    public async Task<IActionResult> GetUpcomingPayments([FromQuery] int? months = null, [FromQuery] int? days = null)
     {
-        var upcomingPayments = await _recurringService.GetUpcomingPaymentsAsync(GetUserId(), months);
+        var upcomingPayments = await _recurringService.GetUpcomingPaymentsAsync(GetUserId(), months, days);
         return Ok(upcomingPayments);
     }
 

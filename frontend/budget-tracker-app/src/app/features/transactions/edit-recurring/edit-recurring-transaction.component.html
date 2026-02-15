@@ -1,0 +1,108 @@
+<div class="dialog-container">
+  <h2 mat-dialog-title>
+    <mat-icon>edit</mat-icon>
+    Tekrarlayan İşlemi Düzenle
+  </h2>
+
+  <mat-dialog-content>
+    <form [formGroup]="editForm" (ngSubmit)="onSubmit()">
+      <div class="form-grid">
+        <!-- Amount -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Tutar</mat-label>
+          <input matInput type="number" formControlName="amount" placeholder="0.00">
+          <span matPrefix>₺&nbsp;</span>
+          <mat-error *ngIf="editForm.get('amount')?.invalid">
+            {{ getErrorMessage('amount') }}
+          </mat-error>
+        </mat-form-field>
+
+        <!-- Description -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Açıklama</mat-label>
+          <input matInput formControlName="description" placeholder="İşlem açıklaması">
+        </mat-form-field>
+
+        <!-- Frequency -->
+        <mat-form-field appearance="outline">
+          <mat-label>Sıklık</mat-label>
+          <mat-select formControlName="frequency">
+            <mat-option *ngFor="let freq of frequencies" [value]="freq.value">
+              {{ freq.label }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <!-- Day of Month -->
+        <mat-form-field appearance="outline">
+          <mat-label>Ayın Günü</mat-label>
+          <input matInput type="number" formControlName="dayOfMonth" min="1" max="31" placeholder="Örn: 15">
+          <mat-hint>Aylık ödemeler için</mat-hint>
+        </mat-form-field>
+
+        <!-- Start Date -->
+        <mat-form-field appearance="outline">
+          <mat-label>Başlangıç Tarihi</mat-label>
+          <input matInput [matDatepicker]="startPicker" formControlName="startDate">
+          <mat-datepicker-toggle matIconSuffix [for]="startPicker"></mat-datepicker-toggle>
+          <mat-datepicker #startPicker></mat-datepicker>
+        </mat-form-field>
+
+        <!-- End Date -->
+        <mat-form-field appearance="outline">
+          <mat-label>Bitiş Tarihi (Opsiyonel)</mat-label>
+          <input matInput [matDatepicker]="endPicker" formControlName="endDate">
+          <mat-datepicker-toggle matIconSuffix [for]="endPicker"></mat-datepicker-toggle>
+          <mat-datepicker #endPicker></mat-datepicker>
+        </mat-form-field>
+
+        <!-- Category -->
+        <mat-form-field appearance="outline">
+          <mat-label>Kategori (Opsiyonel)</mat-label>
+          <mat-select formControlName="categoryId">
+            <mat-option [value]="''">Seçiniz</mat-option>
+            <mat-option *ngFor="let category of categories" [value]="category.id">
+              {{ category.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <!-- Payment Method -->
+        <mat-form-field appearance="outline">
+          <mat-label>Ödeme Yöntemi (Opsiyonel)</mat-label>
+          <mat-select formControlName="paymentMethodId">
+            <mat-option [value]="''">Seçiniz</mat-option>
+            <mat-option *ngFor="let method of paymentMethods" [value]="method.id">
+              {{ method.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <!-- Creditor -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Alacaklı/Banka (Opsiyonel)</mat-label>
+          <mat-select formControlName="creditorId">
+            <mat-option [value]="''">Seçiniz</mat-option>
+            <mat-option *ngFor="let creditor of creditors" [value]="creditor.id">
+              {{ creditor.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <!-- Notes -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Notlar (Opsiyonel)</mat-label>
+          <textarea matInput formControlName="notes" rows="3" placeholder="Ekstra notlar"></textarea>
+        </mat-form-field>
+      </div>
+    </form>
+  </mat-dialog-content>
+
+  <mat-dialog-actions>
+    <button mat-button (click)="cancel()" [disabled]="isLoading">İptal</button>
+    <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="editForm.invalid || isLoading">
+      <mat-spinner *ngIf="isLoading" diameter="20"></mat-spinner>
+      <span *ngIf="!isLoading">Güncelle</span>
+    </button>
+  </mat-dialog-actions>
+</div>

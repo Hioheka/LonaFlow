@@ -46,12 +46,8 @@
           <input
             matInput
             formControlName="description"
-            placeholder="Örn: Maaş, Bonus, Freelance Geliri"
-            required>
+            placeholder="Örn: Maaş, Bonus, Freelance Geliri">
           <mat-icon matPrefix>description</mat-icon>
-          <mat-error *ngIf="incomeForm.get('description')?.invalid">
-            {{ getErrorMessage('description') }}
-          </mat-error>
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="full-width">

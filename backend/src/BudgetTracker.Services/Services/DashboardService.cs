@@ -2,6 +2,7 @@ using BudgetTracker.Core.DTOs.Dashboard;
 using BudgetTracker.Core.Entities;
 using BudgetTracker.Core.Enums;
 using BudgetTracker.Core.Interfaces;
+using BudgetTracker.Data.Context;
 using BudgetTracker.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,26 +10,29 @@ namespace BudgetTracker.Services.Services;
 
 public class DashboardService : IDashboardService
 {
-    private readonly IRepository<Transaction> _transactionRepo;
+    private readonly ApplicationDbContext _context;
 
-    public DashboardService(IRepository<Transaction> transactionRepo)
+    public DashboardService(ApplicationDbContext context)
     {
-        _transactionRepo = transactionRepo;
+        _context = context;
     }
 
     public async Task<DashboardSummaryDto> GetDashboardSummaryAsync(string userId, DateTime startDate, DateTime endDate)
     {
-        var transactions = await _transactionRepo.FindAsync(t =>
-            t.UserId == userId &&
-            t.TransactionDate >= startDate &&
-            t.TransactionDate <= endDate);
-
-        var transactionList = transactions.ToList();
+        var transactions = await _context.Transactions
+            .Include(t => t.Category)
+            .Include(t => t.PaymentMethod)
+            .Include(t => t.Creditor)
+            .Where(t =>
+                t.UserId == userId &&
+                t.TransactionDate >= startDate &&
+                t.TransactionDate <= endDate)
+            .ToListAsync();
 
         var summary = new DashboardSummaryDto
         {
-            TotalIncome = transactionList.Where(t => t.Type == TransactionType.Income).Sum(t => t.Amount),
-            TotalExpense = transactionList.Where(t => t.Type == TransactionType.Expense).Sum(t => t.Amount)
+            TotalIncome = transactions.Where(t => t.Type == TransactionType.Income).Sum(t => t.Amount),
+            TotalExpense = transactions.Where(t => t.Type == TransactionType.Expense).Sum(t => t.Amount)
         };
 
         summary.NetBalance = summary.TotalIncome - summary.TotalExpense;
@@ -37,7 +41,7 @@ public class DashboardService : IDashboardService
             : 0;
 
         // Expenses by Category
-        var expensesByCategory = transactionList
+        var expensesByCategory = transactions
             .Where(t => t.Type == TransactionType.Expense && t.Category != null)
             .GroupBy(t => new { t.Category!.Name, t.Category.Color })
             .Select(g => new CategoryExpenseDto
@@ -59,7 +63,7 @@ public class DashboardService : IDashboardService
             var monthStart = DateTime.Now.AddMonths(-i).Date;
             var monthEnd = monthStart.AddMonths(1).AddDays(-1);
 
-            var monthTransactions = transactionList.Where(t =>
+            var monthTransactions = transactions.Where(t =>
                 t.TransactionDate >= monthStart && t.TransactionDate <= monthEnd).ToList();
 
             var income = monthTransactions.Where(t => t.Type == TransactionType.Income).Sum(t => t.Amount);
@@ -77,7 +81,7 @@ public class DashboardService : IDashboardService
         summary.MonthlyTrends = monthlyTrends;
 
         // Expenses by Payment Method
-        var expensesByPaymentMethod = transactionList
+        var expensesByPaymentMethod = transactions
             .Where(t => t.Type == TransactionType.Expense && t.PaymentMethod != null)
             .GroupBy(t => t.PaymentMethod!.Name)
             .Select(g => new PaymentMethodExpenseDto

@@ -42,13 +42,19 @@
   <!-- Upcoming Payments Section -->
   <section class="upcoming-payments-section">
     <div class="section-header">
-      <h2>
-        <mat-icon>event</mat-icon>
-        Yaklaşan Ödemeler
-      </h2>
-      <span class="payment-count" *ngIf="upcomingPayments.length > 0">
-        {{ upcomingPayments.length }} ödeme
-      </span>
+      <div class="header-left">
+        <h2>
+          <mat-icon>event</mat-icon>
+          Yaklaşan Ödemeler
+        </h2>
+        <span class="payment-count" *ngIf="upcomingPayments.length > 0">
+          {{ upcomingPayments.length }} ödeme
+        </span>
+      </div>
+      <button mat-raised-button color="accent" (click)="openRecurringListDialog()">
+        <mat-icon>manage_history</mat-icon>
+        Tümünü Yönet
+      </button>
     </div>
 
     <div *ngIf="isLoadingPayments" class="loading-container">
@@ -70,6 +76,19 @@
                 <span *ngIf="payment.creditorName"> • {{ payment.creditorName }}</span>
               </p>
             </div>
+            <button mat-icon-button [matMenuTriggerFor]="paymentMenu" class="payment-menu-btn">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #paymentMenu="matMenu">
+              <button mat-menu-item (click)="editRecurringPayment(payment)">
+                <mat-icon>edit</mat-icon>
+                <span>Düzenle</span>
+              </button>
+              <button mat-menu-item (click)="deleteRecurringPayment(payment)">
+                <mat-icon color="warn">delete</mat-icon>
+                <span>Sil</span>
+              </button>
+            </mat-menu>
           </div>
           <div class="payment-details">
             <div class="payment-amount" [class.expense]="payment.type === 2" [class.income]="payment.type === 1">

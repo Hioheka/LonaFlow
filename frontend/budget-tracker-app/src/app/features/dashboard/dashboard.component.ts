@@ -6,11 +6,13 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatMenuModule } from '@angular/material/menu';
 import { AuthService } from '../../core/services/auth.service';
 import { DashboardService } from '../../core/services/dashboard.service';
 import { RecurringTransactionService } from '../../core/services/recurring-transaction.service';
 import { DashboardSummary } from '../../shared/models/dashboard.model';
-import { UpcomingPayment } from '../../shared/models/transaction.model';
+import { UpcomingPayment, RecurringTransaction } from '../../shared/models/transaction.model';
 import { AddPaymentMethodComponent } from '../products/payment-methods/add-payment-method.component';
 import { AddCategoryComponent } from '../products/categories/add-category.component';
 import { AddCreditorComponent } from '../products/creditors/add-creditor.component';
@@ -18,6 +20,9 @@ import { AddIncomeComponent } from '../transactions/add-income/add-income.compon
 import { AddExpenseComponent } from '../transactions/add-expense/add-expense.component';
 import { IncomeListDialogComponent } from '../transactions/income-list/income-list-dialog.component';
 import { ExpenseListDialogComponent } from '../transactions/expense-list/expense-list-dialog.component';
+import { RecurringListDialogComponent } from '../transactions/recurring-list/recurring-list-dialog.component';
+import { EditRecurringTransactionComponent } from '../transactions/edit-recurring/edit-recurring-transaction.component';
+import { ConfirmDeleteDialogComponent } from '../../shared/components/confirm-delete-dialog/confirm-delete-dialog.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -29,7 +34,9 @@ import { ExpenseListDialogComponent } from '../transactions/expense-list/expense
     MatToolbarModule,
     MatIconModule,
     MatProgressSpinnerModule,
-    MatDialogModule
+    MatDialogModule,
+    MatSnackBarModule,
+    MatMenuModule
   ],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
@@ -45,7 +52,8 @@ export class DashboardComponent implements OnInit {
     private authService: AuthService,
     private dashboardService: DashboardService,
     private recurringService: RecurringTransactionService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private snackBar: MatSnackBar
   ) {}
 
   ngOnInit(): void {
@@ -77,7 +85,8 @@ export class DashboardComponent implements OnInit {
   loadUpcomingPayments(): void {
     this.isLoadingPayments = true;
 
-    this.recurringService.getUpcomingPayments(6).subscribe({
+    // 30 gün için upcoming payments
+    this.recurringService.getUpcomingPayments(undefined, 30).subscribe({
       next: (payments) => {
         this.upcomingPayments = payments;
         this.isLoadingPayments = false;
@@ -180,6 +189,71 @@ export class DashboardComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.loadDashboard();
+      }
+    });
+  }
+
+  openRecurringListDialog(): void {
+    const dialogRef = this.dialog.open(RecurringListDialogComponent, {
+      width: '900px',
+      maxWidth: '95vw',
+      disableClose: false
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.loadUpcomingPayments();
+      }
+    });
+  }
+
+  editRecurringPayment(payment: UpcomingPayment): void {
+    // Önce recurring transaction'ı bul
+    this.recurringService.getById(payment.recurringTransactionId).subscribe({
+      next: (transaction: RecurringTransaction) => {
+        const dialogRef = this.dialog.open(EditRecurringTransactionComponent, {
+          width: '700px',
+          data: { transaction }
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+          if (result) {
+            this.loadUpcomingPayments();
+            this.loadDashboard();
+            this.snackBar.open('Tekrarlayan işlem güncellendi', 'Kapat', { duration: 3000 });
+          }
+        });
+      },
+      error: (error) => {
+        console.error('İşlem detayları yüklenemedi:', error);
+        this.snackBar.open('İşlem detayları yüklenemedi', 'Kapat', { duration: 3000 });
+      }
+    });
+  }
+
+  deleteRecurringPayment(payment: UpcomingPayment): void {
+    const dialogRef = this.dialog.open(ConfirmDeleteDialogComponent, {
+      width: '400px',
+      data: {
+        title: 'Tekrarlayan İşlemi Sil',
+        message: `"${payment.description}" isimli tekrarlayan işlemi silmek istediğinizden emin misiniz? Bu işlem geri alınamaz ve gelecekteki tüm ödemeler iptal edilecek.`,
+        itemName: payment.description
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(confirmed => {
+      if (confirmed) {
+        this.recurringService.delete(payment.recurringTransactionId).subscribe({
+          next: () => {
+            this.snackBar.open('Tekrarlayan işlem silindi', 'Kapat', { duration: 3000 });
+            this.loadUpcomingPayments();
+            this.loadDashboard();
+          },
+          error: (error) => {
+            console.error('Silme hatası:', error);
+            this.snackBar.open('Tekrarlayan işlem silinemedi', 'Kapat', { duration: 3000 });
+          }
+        });
       }
     });
   }

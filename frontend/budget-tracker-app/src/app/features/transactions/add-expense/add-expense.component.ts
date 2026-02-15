@@ -56,7 +56,7 @@ export class AddExpenseComponent implements OnInit {
     this.expenseForm = this.fb.group({
       amount: ['', [Validators.required, Validators.min(0.01)]],
       transactionDate: [new Date(), Validators.required],
-      description: ['', Validators.required],
+      description: [''],
       notes: [''],
       categoryId: [''],
       paymentMethodId: [''],
