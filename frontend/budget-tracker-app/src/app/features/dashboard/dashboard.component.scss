@@ -16,6 +16,11 @@ mat-toolbar {
   top: 0;
   z-index: 1000;
 
+  .app-logo {
+    height: 40px;
+    margin-right: 12px;
+  }
+
   span {
     font-size: 20px;
     font-weight: 600;

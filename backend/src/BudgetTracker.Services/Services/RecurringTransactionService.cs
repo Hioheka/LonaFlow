@@ -10,15 +10,18 @@ public class RecurringTransactionService : IRecurringTransactionService
 {
     private readonly IRepository<RecurringTransaction> _recurringRepo;
     private readonly IRepository<RecurringTransactionInstance> _instanceRepo;
+    private readonly IRepository<Transaction> _transactionRepo;
     private readonly IUnitOfWork _unitOfWork;
 
     public RecurringTransactionService(
         IRepository<RecurringTransaction> recurringRepo,
         IRepository<RecurringTransactionInstance> instanceRepo,
+        IRepository<Transaction> transactionRepo,
         IUnitOfWork unitOfWork)
     {
         _recurringRepo = recurringRepo;
         _instanceRepo = instanceRepo;
+        _transactionRepo = transactionRepo;
         _unitOfWork = unitOfWork;
     }
 
@@ -45,6 +48,47 @@ public class RecurringTransactionService : IRecurringTransactionService
 
         await _recurringRepo.AddAsync(recurring);
         await _unitOfWork.SaveChangesAsync();
+
+        // Başlangıç tarihi bugün veya geçmişte ise ilk işlemi hemen oluştur
+        if (recurring.NextDueDate.HasValue && recurring.NextDueDate.Value.Date <= DateTime.UtcNow.Date)
+        {
+            var instance = new RecurringTransactionInstance
+            {
+                RecurringTransactionId = recurring.Id,
+                DueDate = recurring.NextDueDate.Value,
+                IsProcessed = true,
+                ProcessedAt = DateTime.UtcNow,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            await _instanceRepo.AddAsync(instance);
+            await _unitOfWork.SaveChangesAsync();
+
+            var transaction = new Transaction
+            {
+                UserId = userId,
+                Type = dto.Type,
+                Amount = dto.Amount,
+                TransactionDate = recurring.NextDueDate.Value,
+                Description = dto.Description,
+                Notes = dto.Notes,
+                CategoryId = dto.CategoryId,
+                PaymentMethodId = dto.PaymentMethodId,
+                CreditorId = dto.CreditorId,
+                RecurringTransactionInstanceId = instance.Id,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            await _transactionRepo.AddAsync(transaction);
+
+            // NextDueDate'i bir sonraki ödeme tarihine ilerlet
+            recurring.LastProcessedDate = recurring.NextDueDate;
+            recurring.NextDueDate = CalculateNextDueDate(recurring, recurring.NextDueDate.Value);
+            recurring.UpdatedAt = DateTime.UtcNow;
+
+            await _recurringRepo.UpdateAsync(recurring);
+            await _unitOfWork.SaveChangesAsync();
+        }
 
         return MapToDto(recurring);
     }
